@@ -1,9 +1,7 @@
-package com.cpe.springboot.user.model;
+package com.example.CommonLib;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.cpe.springboot.card.model.CardModel;
 
 public class UserDTO {
 	private Integer id;
@@ -18,16 +16,16 @@ public class UserDTO {
 	public UserDTO() {
 	}
 
-	public UserDTO(UserModel user) {
-		this.id = user.getId();
-		this.login = user.getLogin();
-		this.pwd = user.getPwd();
-		this.account = user.getAccount();
-		this.lastName = user.getLastName();
-		this.surName = user.getSurName();
-		this.email = user.getEmail();
-		for (CardModel card : user.getCardList()) {
-			this.cardList.add(card.getId());
+	public UserDTO(Integer id, String login, String pwd, float account, String lastName, String surName, String email, Set<Integer> cardList) {
+		this.id = id;
+		this.login = login;
+		this.pwd = pwd;
+		this.account = account;
+		this.lastName = lastName;
+		this.surName = surName;
+		this.email = email;
+		for (Integer cardId : cardList) {
+			this.cardList.add(cardId);
 		}
 	}
 

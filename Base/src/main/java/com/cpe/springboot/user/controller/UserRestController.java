@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.cpe.springboot.common.tools.DTOMapper;
-import com.cpe.springboot.user.model.AuthDTO;
-import com.cpe.springboot.user.model.UserDTO;
 import com.cpe.springboot.user.model.UserModel;
+
 
 //ONLY FOR TEST NEED ALSO TO ALLOW CROOS ORIGIN ON WEB BROWSER SIDE
 @CrossOrigin

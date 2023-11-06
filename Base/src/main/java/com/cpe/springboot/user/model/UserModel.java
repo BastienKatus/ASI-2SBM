@@ -1,5 +1,6 @@
 package com.cpe.springboot.user.model;
 
+import com.example.CommonLib.*;
 import com.cpe.springboot.card.model.CardModel;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
