@@ -6,7 +6,7 @@ import com.example.Model.CardModel;
 public class DTOMapper {
 	
 	public static CardDTO fromCardModelToCardDTO(CardModel cM) {
-		CardDTO cDto =new CardDTO(cM.getId(), cM.getName(), cM.getDescription(), cM.getFamily(),cM.getAffinity(), cM.getImgUrl(), cM.getSmallImgUrl(),cM.getEnergy(), cM.getHp(), cM.getDefence(), cM.getAttack(), cM.getPrice(),0);
+		CardDTO cDto =new CardDTO(cM.getId(), cM.getName(), cM.getDescription(), cM.getFamily(),cM.getAffinity(), cM.getImgUrl(), cM.getSmallImgUrl(),cM.getEnergy(), cM.getHp(), cM.getDefence(), cM.getAttack(), cM.getPrice(), cM.isSell());
 		return cDto;
 	}
 	
@@ -18,6 +18,7 @@ public class DTOMapper {
 		cm.setAttack(cD.getAttack());
 		cm.setPrice(cD.getPrice());
 		cm.setId(cD.getId());
+		cm.isSell(cD.getIsSell());
 		return cm;
 	}
 	

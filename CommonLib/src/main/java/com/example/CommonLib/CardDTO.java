@@ -2,26 +2,37 @@ package com.example.CommonLib;
 
 public class CardDTO {
 	private Integer id;
+	private String name;
+	private String description;
+	private String family;
+	private String affinity;
+	private String imgUrl;
+	private String smallImgUrl;
 	private float energy;
 	private float hp;
 	private float defence;
 	private float attack;
 	private float price;
-	private Integer userId;
-
+	private boolean isSell;
 	public CardDTO() {
 
 	}
 
-	public CardDTO(Integer id, float energy, float hp, float defence, float attack, float price, Integer userId) {
+	public CardDTO(Integer id,String name, String description, String family, String affinity, String imgUrl,
+				   String smallImgUrl, float energy, float hp, float defence, float attack, float price,boolean isSell) {
 		//super(cModel);
 		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.family = family;
+		this.affinity = affinity;
+		this.imgUrl = imgUrl;
 		this.energy = energy;
 		this.hp = hp;
 		this.defence = defence;
 		this.attack = attack;
 		this.price = price;
-		this.userId = userId;
+		this.isSell = isSell;
 	}
 
 	public Integer getId() {
@@ -30,6 +41,54 @@ public class CardDTO {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public void setFamily(String family) {
+		this.family = family;
+	}
+
+	public void setAffinity(String affinity) {
+		this.affinity = affinity;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public void setSmallImgUrl(String smallImgUrl) {
+		this.smallImgUrl = smallImgUrl;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getFamily() {
+		return family;
+	}
+
+	public String getAffinity() {
+		return affinity;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public String getSmallImgUrl() {
+		return smallImgUrl;
 	}
 
 	public float getEnergy() {
@@ -72,12 +131,11 @@ public class CardDTO {
 		this.price = price;
 	}
 
-	public Integer getUserId() {
-		return userId;
+	public boolean getIsSell() {
+		return isSell;
 	}
 
-	public void setUserId(Integer userId) {
-		this.userId = userId;
+	public void setIsSell(boolean isSell) {
+		this.isSell = isSell;
 	}
-
 }

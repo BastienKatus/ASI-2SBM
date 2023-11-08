@@ -1,8 +1,10 @@
 package com.example.Model;
 
 
+import com.example.CommonLib.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.apache.catalina.User;
 
 import javax.persistence.*;
 
@@ -17,7 +19,7 @@ public class CardModel extends CardBasics{
 	private float defence;
 	private float attack;
 	private float price;
-
+	private boolean isSell;
 
 //	@ManyToOne
 //	@JoinColumn
@@ -34,6 +36,7 @@ public class CardModel extends CardBasics{
 		this.defence=cModel.getDefence();
 		this.attack=cModel.getAttack();
 		this.price=cModel.getPrice();
+		this.isSell=cModel.isSell();
 	}
 
 	public CardModel( CardBasics cardBasic) {
@@ -82,21 +85,7 @@ public class CardModel extends CardBasics{
 		this.price = price;
 	}
 
-	/*public UserModel getUser() {
-		return user;
-	}
 
-	public void setUser(UserModel user) {
-		this.user = user;
-	}*/
-
-//	public void setStore(StoreTransaction storeModel) {
-//		this.store=storeModel;
-//	}
-//
-//	public StoreTransaction getStore() {
-//		return store;
-//	}
 
 	public float computePrice() {
 		return this.hp * 20 + this.defence*20 + this.energy*20 + this.attack*20;
@@ -110,4 +99,11 @@ public class CardModel extends CardBasics{
 		this.id = id;
 	}
 
+	public boolean isSell() {
+		return isSell;
+	}
+
+	public void isSell(boolean sell) {
+		isSell = sell;
+	}
 }
