@@ -18,7 +18,7 @@ public class UserService {
 
 	RestTemplate restTemplate = new RestTemplate();
 
-	String baseUrl = "http://localhost:8080/";
+	String cardControllerBaseUrl = "http://localhost:8082/";
 
 	public UserService(UserRepository userRepository) {
 
@@ -45,7 +45,7 @@ public class UserService {
 		userRepository.save(u);
 		Set<Integer> cardDTORandCard = new HashSet<>();
 		try{
-			ResponseEntity<Set> response2 = restTemplate.getForEntity(baseUrl + "get-random-cards/5", Set.class, "1");
+			ResponseEntity<Set> response2 = restTemplate.getForEntity(cardControllerBaseUrl + "get-random-cards/5", Set.class, "1");
 			cardDTORandCard = response2.getBody();
 		}catch (Exception e){
 			System.out.println("Error while getting random cards");
@@ -67,7 +67,11 @@ public class UserService {
 
 	public UserDTO updateUser(UserDTO user) {
 		UserModel u = fromUDtoToUModel(user);
-		return this.updateUser(user);
+		UserModel uBd = userRepository.save(u);
+		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
+				.collect(Collectors.toSet());
+		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
+		return userDTO;
 	}
 
 	public UserDTO updateUser(UserModel user) {
@@ -83,6 +87,7 @@ public class UserService {
 	}
 
 	public List<UserModel> getUserByLoginPwd(String login, String pwd) {
+		System.out.println("getUserLoginPwd");
 		List<UserModel> ulist = null;
 		ulist = userRepository.findByLoginAndPwd(login, pwd);
 		return ulist;
@@ -90,21 +95,6 @@ public class UserService {
 
 	private UserModel fromUDtoToUModel(UserDTO user) {
 		UserModel u = new UserModel(user);
-		List<Integer> cardIdsList = new ArrayList<Integer>();
-		for (Integer id : user.getCardList()) {
-			// Exemple d'appel pour récupérer une carte par ID
-			try{
-				ResponseEntity<CardDTO> response2 = restTemplate.getForEntity(baseUrl + "card/{id}", CardDTO.class, "1");
-				CardDTO cardDTOById = response2.getBody();
-				if (cardDTOById != null) {
-					cardIdsList.add(cardDTOById.getId());
-				}
-			}
-			catch (Exception e){
-				System.out.println("Error while getting card with id: " +  id);
-				cardIdsList.add(-1);
-			}
-		}
 		return u;
 	}
 }

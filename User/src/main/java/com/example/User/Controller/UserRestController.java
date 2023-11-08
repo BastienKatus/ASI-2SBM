@@ -54,6 +54,24 @@ public class UserRestController {
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User id:"+id+", not found",null);
 
 	}
+
+	@RequestMapping(method=RequestMethod.GET,value="/user/{login}/{password}")
+	private UserDTO getUser(@PathVariable String login, @PathVariable String password) {
+		List<UserModel> users;
+		users = userService.getUserByLoginPwd(login, password);
+		if(users.size() > 0){
+			UserModel user = users.get(0);
+			if(user != null) {
+				UserModel uM = user;
+				Set<Integer> uniqueCardIds = uM.getCardIdsList().stream()
+						.collect(Collectors.toSet());
+				UserDTO userDTO = new UserDTO(uM.getId(), uM.getLogin(), uM.getPwd(), uM.getAccount(), uM.getLastName(), uM.getSurName(), uM.getEmail(), uniqueCardIds);
+
+				return userDTO;
+			}
+		}
+		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User login:"+ login + "password: " +  password + ", not found",null);
+	}
 	
 	@RequestMapping(method=RequestMethod.POST,value="/user")
 	public UserDTO addUser(@RequestBody UserDTO user) {
