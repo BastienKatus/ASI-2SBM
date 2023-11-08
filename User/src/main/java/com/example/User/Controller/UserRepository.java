@@ -1,7 +1,10 @@
-package Controller;
+package com.example.User.Controller;
 
-import Model.UserModel;
+
+
+import com.example.User.Model.UserModel;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 

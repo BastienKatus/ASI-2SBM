@@ -1,8 +1,8 @@
-package Controller;
+package com.example.User.Controller;
 
-import Model.UserModel;
+import com.example.User.Model.UserModel;
 import com.example.CommonLib.AuthDTO;
-import com.example.CommonLib.CardDTO;
+//import com.example.CommonLib.CardDTO;
 import com.example.CommonLib.UserDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +29,7 @@ public class UserRestController {
 	private List<UserDTO> getAllUsers() {
 		List<UserDTO> uDTOList=new ArrayList<UserDTO>();
 		for(UserModel uM: userService.getAllUsers()){
-			Set<Integer> uniqueCardIds = uM.getCardDTOList().stream()
-					.map(CardDTO::getId)
+			Set<Integer> uniqueCardIds = uM.getCardIdsList().stream()
 					.collect(Collectors.toSet());
 			UserDTO userDTO = new UserDTO(uM.getId(), uM.getLogin(), uM.getPwd(), uM.getAccount(), uM.getLastName(), uM.getSurName(), uM.getEmail(), uniqueCardIds);
 
@@ -46,8 +45,7 @@ public class UserRestController {
 		user= userService.getUser(id);
 		if(user.isPresent()) {
 			UserModel uM = user.get();
-			Set<Integer> uniqueCardIds = uM.getCardDTOList().stream()
-					.map(CardDTO::getId)
+			Set<Integer> uniqueCardIds = uM.getCardIdsList().stream()
 					.collect(Collectors.toSet());
 			UserDTO userDTO = new UserDTO(uM.getId(), uM.getLogin(), uM.getPwd(), uM.getAccount(), uM.getLastName(), uM.getSurName(), uM.getEmail(), uniqueCardIds);
 

@@ -1,17 +1,15 @@
-package Controller;
+package com.example.User.Controller;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-import Model.UserModel;
 import com.example.CommonLib.CardDTO;
+import com.example.User.Model.UserModel;
 import com.example.CommonLib.UserDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.client.RestTemplate;
-
-import javax.persistence.criteria.CriteriaBuilder;
 
 @Service
 public class UserService {
@@ -20,9 +18,10 @@ public class UserService {
 
 	RestTemplate restTemplate = new RestTemplate();
 
-	String baseUrl = "http://votre-serveur/api";
+	String baseUrl = "http://localhost:8080/";
 
 	public UserService(UserRepository userRepository) {
+
 		this.userRepository = userRepository;
 	}
 
@@ -44,16 +43,22 @@ public class UserService {
 		UserModel u = fromUDtoToUModel(user);
 		// needed to avoid detached entity passed to persist error
 		userRepository.save(u);
-
-		ResponseEntity<Set> response2 = restTemplate.getForEntity(baseUrl + "/get-random-cards/5", Set.class, "1");
-		Set<CardDTO> cardDTORandCard = response2.getBody();
+		Set<Integer> cardDTORandCard = new HashSet<>();
+		try{
+			ResponseEntity<Set> response2 = restTemplate.getForEntity(baseUrl + "get-random-cards/5", Set.class, "1");
+			cardDTORandCard = response2.getBody();
+		}catch (Exception e){
+			System.out.println("Error while getting random cards");
+			cardDTORandCard.add(1);
+			cardDTORandCard.add(2);
+			cardDTORandCard.add(3);
+		}
 
 		UserModel uBd = userRepository.save(u);
 
-		uBd.setCardDTOList(cardDTORandCard);
+		uBd.setCardIdsList(cardDTORandCard);
 
-		Set<Integer> uniqueCardIds = uBd.getCardDTOList().stream()
-				.map(CardDTO::getId)
+		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
 				.collect(Collectors.toSet());
 		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
 
@@ -67,8 +72,7 @@ public class UserService {
 
 	public UserDTO updateUser(UserModel user) {
 		UserModel uBd = userRepository.save(user);
-		Set<Integer> uniqueCardIds = uBd.getCardDTOList().stream()
-				.map(CardDTO::getId)
+		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
 				.collect(Collectors.toSet());
 		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
 		return userDTO;
@@ -86,13 +90,19 @@ public class UserService {
 
 	private UserModel fromUDtoToUModel(UserDTO user) {
 		UserModel u = new UserModel(user);
-		List<CardDTO> cardDTOList = new ArrayList<CardDTO>();
+		List<Integer> cardIdsList = new ArrayList<Integer>();
 		for (Integer id : user.getCardList()) {
 			// Exemple d'appel pour récupérer une carte par ID
-			ResponseEntity<CardDTO> response2 = restTemplate.getForEntity(baseUrl + "/card/{id}", CardDTO.class, "1");
-			CardDTO cardDTOById = response2.getBody();
-			if (cardDTOById != null) {
-				cardDTOList.add(cardDTOById);
+			try{
+				ResponseEntity<CardDTO> response2 = restTemplate.getForEntity(baseUrl + "card/{id}", CardDTO.class, "1");
+				CardDTO cardDTOById = response2.getBody();
+				if (cardDTOById != null) {
+					cardIdsList.add(cardDTOById.getId());
+				}
+			}
+			catch (Exception e){
+				System.out.println("Error while getting card with id: " +  id);
+				cardIdsList.add(-1);
 			}
 		}
 		return u;

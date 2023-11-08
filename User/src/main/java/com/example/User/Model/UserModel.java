@@ -1,21 +1,16 @@
-package Model;
+package com.example.User.Model;
 
 import com.example.CommonLib.CardDTO;
 import com.example.CommonLib.UserDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
@@ -33,8 +28,9 @@ public class UserModel implements Serializable {
 	private String email;
 
 
-	@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
-	private Set<CardDTO> cardDTOList = new HashSet<>();
+	//@OneToMany(cascade = CascadeType.ALL,mappedBy = "user")
+	@ElementCollection
+	private Set<Integer> cardIdsList = new HashSet<>();
 
 	public UserModel() {
 		this.login = "";
@@ -87,21 +83,21 @@ public class UserModel implements Serializable {
 		this.pwd = pwd;
 	}
 
-	public Set<CardDTO> getCardDTOList() {
-		return cardDTOList;
+	public Set<Integer> getCardIdsList() {
+		return cardIdsList;
 	}
 
-	public void setCardDTOList(Set<CardDTO> cardDTOList) {
-		this.cardDTOList = cardDTOList;
+	public void setCardIdsList(Set<Integer> cardIdsList) {
+		this.cardIdsList = cardIdsList;
 	}
 
-	public void addAllCardList(Collection<CardDTO> cardListId) {
-		this.cardDTOList.addAll(cardListId);
+	public void addAllCardList(Collection<Integer> cardListId) {
+		this.cardIdsList.addAll(cardListId);
 	}
 
-	private boolean checkIfCardId(CardDTO cardDTO){
-		for(CardDTO c_c: this.cardDTOList){
-			if(c_c.getId() == cardDTO.getId()){
+	private boolean checkIfCardId(Integer cardId){
+		for(Integer c_c: this.cardIdsList){
+			if(c_c == cardId){
 				return true;
 			}
 		}
