@@ -1,9 +1,11 @@
 package com.example.Controller;
 
 import com.example.CommonLib.CardDTO;
+import com.example.CommonLib.UserDTO;
 import com.example.common.tools.DTOMapper;
 import com.example.Model.CardModel;
 import com.example.Model.CardReference;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -67,7 +69,6 @@ public class CardModelService {
 */
 
 	public List<CardModel> getAllCardToSell(){
-		return this.cardRepository.findByUser(null);
-	}
+		return this.cardRepository.findAllToSell();}
 }
 

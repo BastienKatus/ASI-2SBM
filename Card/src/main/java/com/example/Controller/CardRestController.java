@@ -10,12 +10,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 
 //ONLY FOR TEST NEED ALSO TO ALLOW CROOS ORIGIN ON WEB BROWSER SIDE
 @CrossOrigin
 @RestController
-
+@RequestMapping("/cards")
 public class CardRestController {
 
 	private final CardModelService cardModelService;
@@ -23,8 +23,8 @@ public class CardRestController {
 	public CardRestController(CardModelService cardModelService) {
 		this.cardModelService=cardModelService;
 	}
-	
-	@RequestMapping(method=RequestMethod.GET, value="/cards")
+
+	@GetMapping()
 	private List<CardDTO> getAllCards() {
 		List<CardDTO> cLightList=new ArrayList<>();
 		for(CardModel c:cardModelService.getAllCardModel()){
@@ -33,8 +33,8 @@ public class CardRestController {
 		return cLightList;
 
 	}
-	
-	@RequestMapping(method=RequestMethod.GET, value="/card/{id}")
+
+	@GetMapping("/{id}")
 	private CardDTO getCard(@PathVariable String id) {
 		Optional<CardModel> rcard;
 		rcard= cardModelService.getCard(Integer.valueOf(id));
@@ -44,24 +44,24 @@ public class CardRestController {
 		throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Card id:"+id+", not found",null);
 
 	}
-	
-	@RequestMapping(method=RequestMethod.POST,value="/card")
+
+	@PostMapping()
 	public CardDTO addCard(@RequestBody CardDTO card) {
 		return cardModelService.addCard(DTOMapper.fromCardDtoToCardModel(card));
 	}
-	
-	@RequestMapping(method=RequestMethod.PUT,value="/card/{id}")
+
+	@PutMapping("/{id}")
 	public CardDTO updateCard(@RequestBody CardDTO card,@PathVariable String id) {
 		card.setId(Integer.valueOf(id));
-		 return cardModelService.updateCard(DTOMapper.fromCardDtoToCardModel(card));
+		return cardModelService.updateCard(DTOMapper.fromCardDtoToCardModel(card));
 	}
-	
-	@RequestMapping(method=RequestMethod.DELETE,value="/card/{id}")
+
+	@DeleteMapping("/{id}")
 	public void deleteCard(@PathVariable String id) {
 		cardModelService.deleteCardModel(Integer.valueOf(id));
 	}
 
-	@RequestMapping(method=RequestMethod.GET, value="/cards_to_sell")
+	@GetMapping("/cards_to_sell")
 	private List<CardDTO> getCardsToSell() {
 		List<CardDTO> list=new ArrayList<>();
 		for( CardModel c : cardModelService.getAllCardToSell()){
@@ -74,7 +74,7 @@ public class CardRestController {
 
 	/*@RequestMapping(method=RequestMethod.GET, value="/get-random-cards/{nbr}")
 	private Set<CardDTO> getRandCard(@PathVariable int nbr) {
-		//return cardModelService.getRandCard(nbr);;
+		return cardModelService.getRandCard(nbr);;
 
 	}*/
 	
