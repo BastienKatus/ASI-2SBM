@@ -1,4 +1,4 @@
-package com.cpe.springboot.store.model;
+package com.example.Store.model;
 
 public enum StoreAction {
 	BUY,SELL

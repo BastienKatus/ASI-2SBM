@@ -67,7 +67,11 @@ public class UserService {
 
 	public UserDTO updateUser(UserDTO user) {
 		UserModel u = fromUDtoToUModel(user);
-		return this.updateUser(user);
+		UserModel uBd = userRepository.save(u);
+		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
+				.collect(Collectors.toSet());
+		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
+		return userDTO;
 	}
 
 	public UserDTO updateUser(UserModel user) {
@@ -90,21 +94,6 @@ public class UserService {
 
 	private UserModel fromUDtoToUModel(UserDTO user) {
 		UserModel u = new UserModel(user);
-		List<Integer> cardIdsList = new ArrayList<Integer>();
-		for (Integer id : user.getCardList()) {
-			// Exemple d'appel pour récupérer une carte par ID
-			try{
-				ResponseEntity<CardDTO> response2 = restTemplate.getForEntity(baseUrl + "card/{id}", CardDTO.class, "1");
-				CardDTO cardDTOById = response2.getBody();
-				if (cardDTOById != null) {
-					cardIdsList.add(cardDTOById.getId());
-				}
-			}
-			catch (Exception e){
-				System.out.println("Error while getting card with id: " +  id);
-				cardIdsList.add(-1);
-			}
-		}
 		return u;
 	}
 }

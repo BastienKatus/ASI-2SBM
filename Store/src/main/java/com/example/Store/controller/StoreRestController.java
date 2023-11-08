@@ -1,7 +1,7 @@
-package com.cpe.springboot.store.controller;
+package com.example.Store.controller;
 
-import com.cpe.springboot.store.model.StoreOrder;
-import com.cpe.springboot.store.model.StoreTransaction;
+import com.example.Store.model.StoreOrder;
+import com.example.Store.model.StoreTransaction;
 
 import java.util.List;
 
@@ -21,13 +21,13 @@ public class StoreRestController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/buy")
-	private boolean getAllCards(@RequestBody StoreOrder order) {
+	private boolean buyCard(@RequestBody StoreOrder order) {
 		return storeService.buyCard(order.getUser_id(), order.getCard_id());
 
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/sell")
-	private boolean getCard(@RequestBody StoreOrder order) {
+	private boolean sellCard(@RequestBody StoreOrder order) {
 		return storeService.sellCard(order.getUser_id(), order.getCard_id());
 	}
 
