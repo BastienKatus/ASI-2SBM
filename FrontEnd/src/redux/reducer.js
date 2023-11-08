@@ -2,8 +2,9 @@ import { combineReducers } from "redux"
 
 const initial = {
     price: 0,
+    user: ''
 }
-export const buyReducer=(state=initial, action) => {
+export const reducer=(state=initial, action) => {
     const{type, payload} = action
     switch(type){
         case "buy":
@@ -14,11 +15,16 @@ export const buyReducer=(state=initial, action) => {
             return{
                 price: state.price-payload.price
             }
+        case "user":
+            return{
+                user: payload.username,
+                price: payload.price
+            }
         default:
             return state
     }
 }
 
 export default combineReducers({
-    buyReducer,
+    reducer,
 })

@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import { useDispatch } from 'react-redux'
-import buy from '../redux/actions'
 
 const CardTable = (props) => {
   const [selectedCard, setSelectedCard] = useState({
     name: '',
   });
+  const [cards, setCards] = useState([]);
+  useEffect(() => {
+      fetch('http://localhost:8082/cards')
+      .then((response) => response.json())
+      .then((data) => {
+        setCards(data)
+      })
+      .catch((error) => {
+        console.log('Erreur de requête API : ', error)
+      })
+      console.log(cards)
+  }, []);
 
   const dispatch = useDispatch();
-
-  const data = [
-    { name: 'Card1', description: 'Description1', family: 'Family1', affinity: 'Affinity1', energy: 100, hp: 200, price: 10 },
-    { name: 'Card2', description: 'Description2', family: 'Family2', affinity: 'Affinity2', energy: 150, hp: 250, price: 20 },
-    { name: 'Card3', description: 'Description3', family: 'Family3', affinity: 'Affinity3', energy: 120, hp: 220, price: 15 },
-    // Ajoutez plus d'éléments au besoin
-  ];
 
   const handle = () => {
     if (selectedCard.name !== '') {
@@ -45,7 +49,9 @@ const CardTable = (props) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((card, index) => (
+          {cards
+          .filter((card) => !card.isSell)
+          .map((card, index) => (
             <tr
               key={index}
               className={selectedCard.name === card.name ? 'selected' : ''}

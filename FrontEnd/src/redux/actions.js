@@ -1,7 +1,7 @@
 const buy = () => {
     return (dispatch) => (
         dispatch({
-            type: "BUY",
+            type: "buy",
             payload: 1,
         })
     )

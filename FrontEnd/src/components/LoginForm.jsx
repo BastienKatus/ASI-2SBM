@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux'
 
-const LoginForm = () => {
+const LoginForm = (props) => {
+    const dispatch = useDispatch();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,10 +17,31 @@ const LoginForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Ajoutez ici la logique pour gérer la soumission du formulaire, par exemple, l'envoi des données de connexion à un serveur.
-    console.log('Username:', username);
-    console.log('Password:', password);
-    // Réinitialiser les champs après la soumission
+  fetch('http://localhost:8081/login', {
+          method: "POST",
+          mode: "cors", // no-cors, *cors, same-origin
+          cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+          credentials: "same-origin", // include, *same-origin, omit
+          headers: {
+            "Content-Type": "application/json",
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          redirect: "follow", // manual, *follow, error
+          referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify({"username": username,"password": password}), // body data type must match "Content-Type" header
+        })
+    .then((response) => response.json())
+    .then((data) => {
+        dispatch({
+            type: 'user',
+            payload:{
+                username: data.surName + data.lastName,
+                price: data.account
+            }
+        })
+        // TODO
+        console.log(data)
+    })
     setUsername('');
     setPassword('');
   };
