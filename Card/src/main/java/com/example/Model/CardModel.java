@@ -7,10 +7,11 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.apache.catalina.User;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="id")
-public class CardModel extends CardBasics{
+public class CardModel extends CardBasics implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
@@ -21,9 +22,6 @@ public class CardModel extends CardBasics{
 	private float price;
 	private boolean isSell;
 
-//	@ManyToOne
-//	@JoinColumn
-//	private StoreTransaction store;
 
 	public CardModel() {
 		super();
@@ -105,5 +103,19 @@ public class CardModel extends CardBasics{
 
 	public void isSell(boolean sell) {
 		isSell = sell;
+	}
+
+	@Override
+	public String toString() {
+		return "CardModel{" +
+				super.toString() +
+				"id=" + id +
+				", energy=" + energy +
+				", hp=" + hp +
+				", defence=" + defence +
+				", attack=" + attack +
+				", price=" + price +
+				", isSell=" + isSell +
+				'}';
 	}
 }

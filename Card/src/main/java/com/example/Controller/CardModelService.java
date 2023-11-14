@@ -2,10 +2,14 @@ package com.example.Controller;
 
 import com.example.CommonLib.CardDTO;
 import com.example.CommonLib.UserDTO;
+import com.example.ESB.BusAction;
+import com.example.ESB.BusEmitter;
+import com.example.ESB.BusModel;
 import com.example.common.tools.DTOMapper;
 import com.example.Model.CardModel;
 import com.example.Model.CardReference;
 import org.apache.catalina.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -15,6 +19,9 @@ public class CardModelService {
 	private final CardModelRepository cardRepository;
 	private final CardReferenceService cardRefService;
 	private Random rand;
+
+	@Autowired()
+	private BusEmitter busEmitter;
 
 	public CardModelService(CardModelRepository cardRepository,CardReferenceService cardRefService) {
 		this.rand=new Random();
@@ -29,14 +36,22 @@ public class CardModelService {
 		return cardList;
 	}
 
-	public CardDTO addCard(CardModel cardModel) {
-		CardModel cDb=cardRepository.save(cardModel);
+	public String createCardESB(CardModel cardModel) {
+		BusModel busModel = new BusModel(cardModel, BusAction.CREATE);
+		busEmitter.sendMsg(busModel,"CARD");
+		return "En cour de création";
+	}
+
+	public CardDTO createCard(CardModel cardModel) {
+		CardModel cDb = cardRepository.save(cardModel);
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 
-	public void updateCardRef(CardModel cardModel) {
-		cardRepository.save(cardModel);
 
+	public String updateCardESB(CardModel cardModel) {
+		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE);
+		busEmitter.sendMsg(busModel,"CARD");
+		return "En cour de mise à jour";
 	}
 	public CardDTO updateCard(CardModel cardModel) {
 		CardModel cDb=cardRepository.save(cardModel);
@@ -45,8 +60,17 @@ public class CardModelService {
 	public Optional<CardModel> getCard(Integer id) {
 		return cardRepository.findById(id);
 	}
-	
-	public void deleteCardModel(Integer id) {
+
+	public String deleteCardESB(Integer id) {
+
+		BusModel busModel = new BusModel();
+		busModel.getCardModel().setId(id);
+		busModel.setAction(BusAction.DELETE);
+		busEmitter.sendMsg(busModel,"CARD");
+		return "En cour de suppression";
+	}
+
+	public void deleteCard(Integer id) {
 		cardRepository.deleteById(id);
 	}
 	

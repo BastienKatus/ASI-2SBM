@@ -46,19 +46,20 @@ public class CardRestController {
 	}
 
 	@PostMapping()
-	public CardDTO addCard(@RequestBody CardDTO card) {
-		return cardModelService.addCard(DTOMapper.fromCardDtoToCardModel(card));
+	public String addCard(@RequestBody CardDTO card) {
+		return cardModelService.createCardESB(DTOMapper.fromCardDtoToCardModel(card));
+
 	}
 
 	@PutMapping("/{id}")
-	public CardDTO updateCard(@RequestBody CardDTO card,@PathVariable String id) {
+	public String updateCard(@RequestBody CardDTO card,@PathVariable String id) {
 		card.setId(Integer.valueOf(id));
-		return cardModelService.updateCard(DTOMapper.fromCardDtoToCardModel(card));
+		return cardModelService.updateCardESB(DTOMapper.fromCardDtoToCardModel(card));
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteCard(@PathVariable String id) {
-		cardModelService.deleteCardModel(Integer.valueOf(id));
+	public String deleteCard(@PathVariable String id) {
+		return cardModelService.deleteCardESB(Integer.valueOf(id));
 	}
 
 	@GetMapping("/cards_to_sell")

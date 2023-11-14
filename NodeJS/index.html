@@ -2,38 +2,105 @@
 <html>
 <head>
   <title>Chat en temps réel</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    #chat-box {
-      width: 300px;
-      margin: 0 auto;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-      box-shadow: 0 0 10px #ccc;
-    }
-    #message-list {
-      list-style-type: none;
-      padding: 0;
-    }
-    #message-list li {
-      margin: 5px 0;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div id="chat-box">
-  <h2>Chat en temps réel</h2>
-  <ul id="message-list"></ul>
-  <select id="user-list-dropdown"></select>
-  <input type="text" id="message-input" placeholder="Entrez votre message">
-  <button id="send-button">Envoyer</button>
-</div>
-
+  <div id="chat-box">
+    <h2>Chat en temps réel</h2>
+    Qui êtes-vous ?
+    <select id="user-list-sender"></select>
+    Avec qui souhaitez-vous chatter ?
+    <select id="user-list-receiver"></select>
+    <button onclick="joinChat()">Rejoindre le chat</button>
+    <input type="text" id="message-input" placeholder="Entrez votre message">
+    <button onclick="sendMessage()" id="send-button">Envoyer</button>
+    <p id="roomNameText">Le nom de la room sera affiché ici</p>
+  </div>
+  <div id="message-box">
+    <ul id="message-list"></ul>
+  </div>
   <script src="/socket.io/socket.io.js"></script>
-  <script src="index.js"></script>
+  <script>
+    
+  const socket = io();
+  //console.log(document.getElementById('user-list-sender'))
+  // Gestion de la réception de la liste des utilisateurs
+  const userListSender = document.getElementById('user-list-sender');
+  const userListReceiver = document.getElementById('user-list-receiver');
+  socket.on('userList', (users) => {
+  // Afficher la liste des utilisateurs dans les listes déroulantes
+  users.forEach((user) => {
+  const option = document.createElement('option');
+  option.value = user.login;
+  option.textContent = user.login;
+  userListSender.appendChild(option.cloneNode(true));
+  userListReceiver.appendChild(option.cloneNode(true));
+  });
+
+  // selection premier utilisateur par défaut
+  if (users.length > 0) {
+    userListSender.selectedIndex = 0;
+    userListReceiver.selectedIndex = 0;
+  }
+  });
+
+  // Gestion de l'envoi de messages (broadcast)
+  /*const messageInput = document.getElementById('message-input');
+  const sendButton = document.getElementById('send-button');
+  sendButton.addEventListener('click', () => {
+    const message = messageInput.value;
+    if (message) {
+      socket.emit('message', message);
+      messageInput.value = '';
+    }
+  });
+
+  // Gestion de la réception de messages (broadcast)
+  socket.on('message', (message) => {
+    messageList = document.getElementById('message-list')
+    user = document.getElementById('user-list-sender')
+    const listItem = document.createElement('li');
+    listItem.textContent = user.value + ' : ' + message;
+    messageList.appendChild(listItem);
+  });*/
+
+  function getRoomName(user1, user2) {
+    const sortedNames = [user1, user2].sort();
+    return `${sortedNames[0]}_${sortedNames[1]}`;
+  }
+
+  function leaveChat(){
+    const roomNameText = document.getElementById('roomNameText').textContent;
+    const tab = roomNameText.split(' ');
+    const roomName = tab[5];
+    console.log(roomName);
+    socket.emit('leaveRoom', roomName)
+  }
+
+  function joinChat() {
+    leaveChat();
+    const senderUsername = document.getElementById('user-list-sender').value;
+    const receiverUsername = document.getElementById('user-list-receiver').value;
+    const roomNameText = document.getElementById('roomNameText');
+    roomNameText.textContent = "Vous êtes dans la room " + getRoomName(senderUsername, receiverUsername)
+    socket.emit('joinRoom', { sender: senderUsername, receiver: receiverUsername });
+  }
+
+  function sendMessage() {
+    const sender = document.getElementById('user-list-sender').value;
+    const receiver = document.getElementById('user-list-receiver').value;
+    const message = document.getElementById('message-input').value;
+
+    socket.emit('chatMessage', { sender, receiver, message });
+  }
+
+  socket.on('chatMessage', (data) => {
+    const messages = document.getElementById('message-list');
+    const li = document.createElement('li');
+    li.textContent = `${data.sender}: ${data.message}`;
+    messages.appendChild(li);
+  });
+  </script>
 </body>
 </html>
