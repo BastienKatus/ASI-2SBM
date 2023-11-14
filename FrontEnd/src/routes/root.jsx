@@ -5,7 +5,7 @@ import { faCoins } from '@fortawesome/free-solid-svg-icons';
 
 
 export default function Root(props) {
-  const buyReducer = useSelector(state => state.buyReducer)
+  const reducer = useSelector(state => state.reducer)
   return (
     <>
       <div id="sidebar">
@@ -27,7 +27,7 @@ export default function Root(props) {
                 <Link to={`/buy`}>Acheter</Link>
             </li>
             <li className="bottomProfile">
-                <p>[USER] : {buyReducer.price}<FontAwesomeIcon icon={faCoins} /></p>
+                <p>{reducer.user} : {reducer.price}<FontAwesomeIcon icon={faCoins} /></p>
             </li>
           </ul>
         </nav>

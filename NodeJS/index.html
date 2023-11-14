@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat en temps réel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #chat-box {
+      width: 300px;
+      margin: 0 auto;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    #message-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    #message-list li {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<div id="chat-box">
+  <h2>Chat en temps réel</h2>
+  <ul id="message-list"></ul>
+  <select id="user-list-dropdown"></select>
+  <input type="text" id="message-input" placeholder="Entrez votre message">
+  <button id="send-button">Envoyer</button>
+</div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>
