@@ -74,19 +74,19 @@ public class UserRestController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST,value="/user")
-	public UserDTO addUser(@RequestBody UserDTO user) {
-		return userService.addUser(user);
+	public String addUser(@RequestBody UserDTO user) {
+		return userService.addUserESB(user);
 	}
 	
 	@RequestMapping(method=RequestMethod.PUT,value="/user/{id}")
-	public UserDTO updateUser(@RequestBody UserDTO user, @PathVariable String id) {
+	public String updateUser(@RequestBody UserDTO user, @PathVariable String id) {
 		user.setId(Integer.valueOf(id));
-		return userService.updateUser(user);
+		return userService.updateUserESB(user);
 	}
 	
 	@RequestMapping(method=RequestMethod.DELETE,value="/user/{id}")
-	public void deleteUser(@PathVariable String id) {
-		userService.deleteUser(id);
+	public String deleteUserESB(@PathVariable String id) {
+		return userService.deleteUserESB(id);
 	}
 	
 	@RequestMapping(method=RequestMethod.POST,value="/auth")

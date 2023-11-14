@@ -1,9 +1,10 @@
 package com.example.Model;
 
 import javax.persistence.MappedSuperclass;
+import java.io.Serializable;
 
 @MappedSuperclass
-public class CardBasics {
+public class CardBasics implements Serializable {
 	private String name;
 	private String description;
 	private String family;
@@ -78,4 +79,15 @@ public class CardBasics {
 		this.smallImgUrl = smallImgUrl;
 	}
 
+	@Override
+	public String toString() {
+		return "CardBasics{" +
+				"name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", family='" + family + '\'' +
+				", affinity='" + affinity + '\'' +
+				", imgUrl='" + imgUrl + '\'' +
+				", smallImgUrl='" + smallImgUrl + '\'' +
+				'}';
+	}
 }
