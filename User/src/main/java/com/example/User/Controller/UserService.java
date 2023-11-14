@@ -3,9 +3,12 @@ package com.example.User.Controller;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import com.example.CommonLib.CardDTO;
+import com.example.User.ESB.BusAction;
+import com.example.User.ESB.BusEmitter;
+import com.example.User.ESB.BusModel;
 import com.example.User.Model.UserModel;
 import com.example.CommonLib.UserDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,8 @@ import org.springframework.web.client.RestTemplate;
 public class UserService {
 
 	private final UserRepository userRepository;
+	@Autowired()
+	private BusEmitter busEmitter;
 
 	RestTemplate restTemplate = new RestTemplate();
 
@@ -39,8 +44,13 @@ public class UserService {
 		return userRepository.findById(id);
 	}
 
-	public UserDTO addUser(UserDTO user) {
-		UserModel u = fromUDtoToUModel(user);
+	public String addUserESB(UserDTO user) {
+		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.CREATE);
+		busEmitter.sendMsg(busModel,"USER");
+		return "En cours de création";
+	}
+
+	public UserDTO addUser(UserModel u) {
 		// needed to avoid detached entity passed to persist error
 		userRepository.save(u);
 		Set<Integer> cardDTORandCard = new HashSet<>();
@@ -65,6 +75,12 @@ public class UserService {
 		return userDTO;
 	}
 
+	public String updateUserESB(UserDTO user) {
+		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.UPDATE);
+		busEmitter.sendMsg(busModel,"USER");
+		return "En cours de modification";
+	}
+
 	public UserDTO updateUser(UserDTO user) {
 		UserModel u = fromUDtoToUModel(user);
 		UserModel uBd = userRepository.save(u);
@@ -82,8 +98,15 @@ public class UserService {
 		return userDTO;
 	}
 
-	public void deleteUser(String id) {
-		userRepository.deleteById(Integer.valueOf(id));
+	public String deleteUserESB(String id) {
+		BusModel busModel = new BusModel();
+		busModel.getUserModel().setId(Integer.valueOf(id));
+		busEmitter.sendMsg(busModel,"USER");
+		return "En cours de suppression";
+	}
+
+	public void deleteUser(int id) {
+		userRepository.deleteById(id);
 	}
 
 	public List<UserModel> getUserByLoginPwd(String login, String pwd) {
