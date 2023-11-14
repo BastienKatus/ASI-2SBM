@@ -24,45 +24,16 @@
   </style>
 </head>
 <body>
-  <div id="chat-box">
-    <h2>Chat en temps réel</h2>
-    <ul id="message-list"></ul>
-    <input type="text" id="message-input" placeholder="Entrez votre message">
-    <button id="send-button">Envoyer</button>
-  </div>
+
+<div id="chat-box">
+  <h2>Chat en temps réel</h2>
+  <ul id="message-list"></ul>
+  <select id="user-list-dropdown"></select>
+  <input type="text" id="message-input" placeholder="Entrez votre message">
+  <button id="send-button">Envoyer</button>
+</div>
 
   <script src="/socket.io/socket.io.js"></script>
-  <script>
-    const socket = io();
-
-    // Gestion de la réception de la liste des utilisateurs
-    const messageList = document.getElementById('message-list');
-    socket.on('userList', (users) => {
-      // Afficher la liste des utilisateurs
-      users.forEach((user) => {
-        const listItem = document.createElement('li');
-        listItem.textContent = user.login; // Vous pouvez afficher d'autres propriétés de l'utilisateur si nécessaire
-        messageList.appendChild(listItem);
-      });
-    });
-
-    // Gestion de l'envoi de messages
-    const messageInput = document.getElementById('message-input');
-    const sendButton = document.getElementById('send-button');
-    sendButton.addEventListener('click', () => {
-      const message = messageInput.value;
-      if (message) {
-        socket.emit('message', message);
-        messageInput.value = '';
-      }
-    });
-
-    // Gestion de la réception de messages
-    socket.on('message', (message) => {
-      const listItem = document.createElement('li');
-      listItem.textContent = message;
-      messageList.appendChild(listItem);
-    });
-  </script>
+  <script src="index.js"></script>
 </body>
 </html>
