@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 const RegistrationForm = () => {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [lastName, setLastName] = useState('');
+  const [surName, setSurName] = useState('');
+  const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleNameChange = (e) => {
-    setName(e.target.value);
+  const handleLastNameChange = (e) => {
+    setLastName(e.target.value);
   };
 
-  const handleSurnameChange = (e) => {
-    setSurname(e.target.value);
+  const handleSurNameChange = (e) => {
+    setSurName(e.target.value);
+  };
+
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleLoginChange = (e) => {
+    setLogin(e.target.value);
   };
 
   const handlePasswordChange = (e) => {
@@ -22,47 +38,81 @@ const RegistrationForm = () => {
     setRePassword(e.target.value);
   };
 
+  function handleRouting() {
+    navigate("/");
+  }
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(name !== '' && surname !== '' && password !== '' && rePassword === password){
-        console.log('ok')
-    }
-
-    // Ajoutez ici la logique pour gérer la soumission du formulaire d'inscription
-    console.log('Name:', name);
-    console.log('Surname:', surname);
-    console.log('Password:', password);
-    console.log('Re-entered Password:', rePassword);
+    fetch('http://localhost:8081/register', {
+              method: "POST",
+              mode: "cors", // no-cors, *cors, same-origin
+              cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+              credentials: "same-origin", // include, *same-origin, omit
+              headers: {
+                "Content-Type": "application/json",
+                // 'Content-Type': 'application/x-www-form-urlencoded',
+              },
+              redirect: "follow", // manual, *follow, error
+              referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+              body: JSON.stringify({"login": login,"pwd": password, "lastName": lastName, "surName": surName, "email": email}), // body data type must match "Content-Type" header
+            })
+        .then((response) => response.json())
+        .then((data) => {
+        console.log(data)
+            dispatch({
+                type: 'user',
+                payload:{
+                    username: data.surName + ' ' + data.lastName,
+                    price: data.account,
+                    cardList: data.cardList
+                }
+            })
+            handleRouting()
+        })
     // Réinitialiser les champs après la soumission
-    setName('');
-    setSurname('');
+    setSurName('');
+    setLastName('');
     setPassword('');
     setRePassword('');
+    setEmail('');
   };
 
   return (
     <form className="registration-form" onSubmit={handleSubmit}>
       <div>
         <label>
-          Name:
-          <input type="text" value={name} onChange={handleNameChange} />
+          Nom:
+          <input type="text" value={lastName} onChange={handleLastNameChange} />
         </label>
       </div>
       <div>
         <label>
-          Surname:
-          <input type="text" value={surname} onChange={handleSurnameChange} />
+          Prénom:
+          <input type="text" value={surName} onChange={handleSurNameChange} />
         </label>
       </div>
       <div>
         <label>
-          Password:
+          Email:
+          <input type="email" value={email} onChange={handleEmailChange} />
+        </label>
+      </div>
+      <div>
+        <label>
+          Login:
+          <input type="text" value={login} onChange={handleLoginChange} />
+        </label>
+      </div>
+      <div>
+        <label>
+          Mot de Passe:
           <input type="password" value={password} onChange={handlePasswordChange} />
         </label>
       </div>
       <div>
         <label>
-          Re-enter Password:
+          Confirmation Mot de Passe:
           <input type="password" value={rePassword} onChange={handleRePasswordChange} />
         </label>
       </div>

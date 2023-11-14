@@ -1,8 +1,7 @@
 import './App.css';
 import Login from './views/login/Login';
 import Home from './views/home/Home';
-import Buy from './views/buy/Buy';
-import Sell from './views/sell/Sell';
+import Market from './views/market/Market';
 import Root from './routes/root'
 import Register from './views/register/Register'
 import React, { useEffect, useState } from 'react';
@@ -42,15 +41,15 @@ const router = createBrowserRouter([
         element: <Login />,
     },
     {
-        path: "Sell",
-        element: <Sell />,
+        path: "/sell",
+        element: <Market type="sell" />,
     },
     {
-        path: "Buy",
-        element: <Buy />,
+        path: "/buy",
+        element: <Market type="buy" />,
     },
     {
-        path: "Register",
+        path: "/register",
         element: <Register />,
     }
   ],

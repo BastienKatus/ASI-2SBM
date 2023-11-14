@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Card from './Card';
 import { useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux';
 
 const CardTable = (props) => {
-  const [selectedCard, setSelectedCard] = useState({
-    name: '',
-  });
+  const reducer = useSelector(state => state.reducer)
   const [cards, setCards] = useState([]);
   useEffect(() => {
       fetch('http://localhost:8082/cards')
@@ -16,16 +15,18 @@ const CardTable = (props) => {
       .catch((error) => {
         console.log('Erreur de requête API : ', error)
       })
-      console.log(cards)
   }, []);
 
   const dispatch = useDispatch();
 
   const handle = () => {
-    if (selectedCard.name !== '') {
+    if (reducer.selectedCard !== undefined) {
         dispatch({
             type: props.type,
-            payload:{price: parseInt(selectedCard.price)}
+            payload:
+            {
+                price: parseInt(reducer.selectedCard.price)
+            }
         })
 
     }
@@ -33,6 +34,16 @@ const CardTable = (props) => {
       alert('Veuillez sélectionner une carte.');
     }
   };
+
+  const handleSelectCard = (card) => {
+       dispatch({
+           type: 'selectCard',
+           payload:
+           {
+               selectedCard: card
+           }
+       })
+  }
 
   return (
     <div className="card-table-container">
@@ -50,12 +61,15 @@ const CardTable = (props) => {
         </thead>
         <tbody>
           {cards
-          .filter((card) => !card.isSell)
+          .filter((card) => (
+              (props.type === "buy" && !card.isSell) ||
+              (props.type === "sell" && reducer.cards.includes(card.id))
+            ))
           .map((card, index) => (
             <tr
               key={index}
-              className={selectedCard.name === card.name ? 'selected' : ''}
-              onClick={() => setSelectedCard(card)}
+              className={reducer.selectedCard && reducer.selectedCard.name === card.name ? 'selected' : ''}
+              onClick={() => handleSelectCard(card)}
             >
               <td>{card.name}</td>
               <td>{card.description}</td>
@@ -64,17 +78,16 @@ const CardTable = (props) => {
               <td>{card.energy}</td>
               <td>{card.hp}</td>
               <td>{card.price}</td>
+              <td>{card.isSell}</td>
             </tr>
           ))}
         </tbody>
       </table>
       <div className="buy-button-container">
-        <button onClick={handle} disabled={!selectedCard}>
+        <button onClick={handle} disabled={reducer.selectedCard === undefined}>
             { props.type === 'sell' ? 'Vendre' : 'Acheter' }
         </button>
       </div>
-      {selectedCard.name !== '' && <Card card={selectedCard} />}
-
     </div>
   );
 };
