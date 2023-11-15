@@ -42,7 +42,7 @@ const LoginForm = (props) => {
         dispatch({
             type: 'user',
             payload:{
-                username: data.surName + ' ' + data.lastName,
+                username: data,
                 price: data.account,
                 cardList: data.cardList
             }

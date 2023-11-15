@@ -5,6 +5,7 @@ import Card from '../../components/Card'
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 export default function Market(props){
 
@@ -12,8 +13,12 @@ export default function Market(props){
   const reducer = useSelector(state => state.reducer)
 
     const location = useLocation();
+    const navigate = useNavigate();
 
       useEffect(() => {
+        if(reducer.user.length === 0){
+            navigate('/')
+        }
         dispatch({
            type: 'selectCard',
            payload:

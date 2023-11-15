@@ -568,3 +568,90 @@ i {
   justify-content: flex-end;
   color: #43a047;
 }
+
+.card-grid {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px 100px;
+}
+
+/* Styles pour chaque carte (ajustez selon vos besoins) */
+.card {
+    background-color: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
+
+#chat-box {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+.input-group {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+}
+
+select, button, input, p {
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+#send-button {
+  background-color: #007bff;
+}
+
+#message-box {
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow-y: auto;
+  max-height: 450px;
+}
+
+#message-list {
+  list-style: none;
+  padding: 0;
+}
+
+#message-list li {
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+#message-list li.sender {
+  background-color: #4caf50;
+  color: #fff;
+  text-align: right;
+}
+
+#message-list li.receiver {
+  background-color: #007bff;
+  color: #fff;
+  text-align: left;
+}
+
+#roomNameText {
+  text-align: center;
+  color: #555;
+  font-style: italic;
+}
