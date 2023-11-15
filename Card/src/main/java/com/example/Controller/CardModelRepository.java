@@ -12,4 +12,5 @@ public interface CardModelRepository extends CrudRepository<CardModel, Integer> 
     // Méthode de requête personnalisée pour récupérer toutes les cartes avec userId = 0
     @Query("SELECT c FROM CardModel c WHERE c.isSell = False")
     List<CardModel> findAllToSell();
+
 }
