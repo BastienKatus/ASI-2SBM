@@ -73,10 +73,9 @@ public class CardRestController {
 
 	}
 
-	/*@RequestMapping(method=RequestMethod.GET, value="/get-random-cards/{nbr}")
-	private Set<CardDTO> getRandCard(@PathVariable int nbr) {
-		return cardModelService.getRandCard(nbr);;
-
-	}*/
+	@GetMapping ("/get-random-cards/{nbr}")
+	private List<Integer> getRandCard(@PathVariable int nbr) {
+		return cardModelService.getRandCard(nbr);
+	}
 	
 }

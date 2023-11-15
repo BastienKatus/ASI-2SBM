@@ -1,10 +1,11 @@
 package com.example.Controller;
 
-import com.example.CommonLib.BusNotifModel;
 import com.example.CommonLib.CardDTO;
 import com.example.ESB.BusAction;
 import com.example.ESB.BusEmitter;
 import com.example.ESB.BusModel;
+import com.example.ESB.BusNotifModel;
+import com.example.Model.CardReference;
 import com.example.common.tools.DTOMapper;
 import com.example.Model.CardModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,10 @@ public class CardModelService {
 
 	public CardDTO createCard(CardModel cardModel,Integer idTransaction) {
 		CardModel cDb = cardRepository.save(cardModel);
-		BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"CARD");
-		busEmitter.sendMsg(busNotifModel,"NOTIFS");
+		if (idTransaction != 0){
+			BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"CARD");
+			busEmitter.sendMsg(busNotifModel,"NOTIFS");
+		}
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 
@@ -84,8 +87,8 @@ public class CardModelService {
 		busEmitter.sendMsg(busNotifModel,"NOTIFS");
 	}
 	
-	/*public Set<CardModel> getRandCard(int nbr){
-		List<CardModel> cardList=new ArrayList<>();
+	public List<Integer> getRandCard(int nbr){
+		List<Integer> cardList=new ArrayList<>();
 		for(int i=0;i<nbr;i++) {
 			CardReference currentCardRef=cardRefService.getRandCardRef();
 			CardModel currentCard=new CardModel(currentCardRef);
@@ -95,12 +98,12 @@ public class CardModelService {
 			currentCard.setHp(rand.nextFloat()*100);
 			currentCard.setPrice(currentCard.computePrice());
 			//save new card before sending for user creation
-			//this.addCard(currentCard);
-			cardList.add(currentCard);
+			this.createCard(currentCard,0);
+			cardList.add(currentCard.getId());
 		}
 		return cardList;
 	}
-*/
+
 
 	public List<CardModel> getAllCardToSell(){
 		return this.cardRepository.findAllToSell();}
