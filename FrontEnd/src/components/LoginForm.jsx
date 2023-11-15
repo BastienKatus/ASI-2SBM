@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = (props) => {
-    const dispatch = useDispatch();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,6 +17,10 @@ const LoginForm = (props) => {
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
+
+  function handleRouting() {
+    navigate("/");
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,12 +42,13 @@ const LoginForm = (props) => {
         dispatch({
             type: 'user',
             payload:{
-                username: data.surName + data.lastName,
-                price: data.account
+                username: data.surName + ' ' + data.lastName,
+                price: data.account,
+                cardList: data.cardList
             }
         })
-        // TODO
-        console.log(data)
+
+        handleRouting()
     })
     setUsername('');
     setPassword('');

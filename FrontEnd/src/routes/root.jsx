@@ -11,22 +11,34 @@ export default function Root(props) {
       <div id="sidebar">
         <nav>
           <ul>
-            <li>
-                <Link to={`/`}>Accueil</Link>
-            </li>
-            <li>
-                <Link to={`/login`}>Se connecter</Link>
-            </li>
-            <li>
-                <Link to={`/register`}>S'inscrire</Link>
-            </li>
-            <li>
-                <Link to={`/sell`}>Vendre</Link>
-            </li>
-            <li>
-                <Link to={`/buy`}>Acheter</Link>
-            </li>
+            {reducer.user !== "" ? (
+                    <>
+                    <li>
+                        <Link to={`/`}>Accueil</Link>
+                    </li>
+                    <li>
+                        <Link to={`/sell`}>Vendre</Link>
+                    </li>
+                    <li>
+                        <Link to={`/buy`}>Acheter</Link>
+                    </li>
+                    </>
+                ) : (
+                    <>
+                    <li>
+                        <Link to={`/`}>Accueil</Link>
+                    </li>
+                    <li>
+                        <Link to={`/login`}>Se connecter</Link>
+                    </li>
+                    <li>
+                        <Link to={`/register`}>S'inscrire</Link>
+                    </li>
+                    </>
+                )
+            }
             <li className="bottomProfile">
+                <p>{JSON.stringify(reducer.cards)}</p>
                 <p>{reducer.user} : {reducer.price}<FontAwesomeIcon icon={faCoins} /></p>
             </li>
           </ul>
