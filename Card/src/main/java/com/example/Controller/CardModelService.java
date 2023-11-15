@@ -19,6 +19,7 @@ public class CardModelService {
 	private final CardModelRepository cardRepository;
 	private final CardReferenceService cardRefService;
 	private Random rand;
+	private int idTransaction;
 
 	@Autowired()
 	private BusEmitter busEmitter;
@@ -28,6 +29,7 @@ public class CardModelService {
 		// Dependencies injection by constructor
 		this.cardRepository=cardRepository;
 		this.cardRefService=cardRefService;
+		this.idTransaction = 0;
 	}
 	
 	public List<CardModel> getAllCardModel() {
@@ -39,11 +41,14 @@ public class CardModelService {
 	public String createCardESB(CardModel cardModel) {
 		BusModel busModel = new BusModel(cardModel, BusAction.CREATE);
 		busEmitter.sendMsg(busModel,"CARD");
-		return "En cour de création";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/CARD";
 	}
 
 	public CardDTO createCard(CardModel cardModel) {
 		CardModel cDb = cardRepository.save(cardModel);
+		BusModel busModel = new BusModel(cardModel, BusAction.CREATE);
+		busEmitter.sendMsg(busModel,"NOTIFS");
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 
@@ -51,10 +56,13 @@ public class CardModelService {
 	public String updateCardESB(CardModel cardModel) {
 		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE);
 		busEmitter.sendMsg(busModel,"CARD");
-		return "En cour de mise à jour";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/CARD";
 	}
 	public CardDTO updateCard(CardModel cardModel) {
 		CardModel cDb=cardRepository.save(cardModel);
+		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE);
+		busEmitter.sendMsg(busModel,"NOTIFS");
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 	public Optional<CardModel> getCard(Integer id) {
@@ -67,11 +75,15 @@ public class CardModelService {
 		busModel.getCardModel().setId(id);
 		busModel.setAction(BusAction.DELETE);
 		busEmitter.sendMsg(busModel,"CARD");
-		return "En cour de suppression";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/CARD";
 	}
 
 	public void deleteCard(Integer id) {
 		cardRepository.deleteById(id);
+		BusModel busModel = new BusModel();
+		busModel.getCardModel().setId(id);
+		busEmitter.sendMsg(busModel,"NOTIFS");
 	}
 	
 	/*public Set<CardModel> getRandCard(int nbr){

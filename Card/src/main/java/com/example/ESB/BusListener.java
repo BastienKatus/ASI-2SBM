@@ -25,7 +25,6 @@ public class BusListener {
 
     @JmsListener(destination = "CARD", containerFactory = "connectionFactory")
     public void receiveMessage(BusModel busmodel, Message message) {
-        System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");
 
         switch (busmodel.getAction()){
             case CREATE -> cardModelService.createCard(busmodel.getCardModel());
@@ -33,7 +32,7 @@ public class BusListener {
             case UPDATE -> cardModelService.updateCard(busmodel.getCardModel());
         }
 
-        //System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");
+        System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");
 
     }
 

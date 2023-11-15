@@ -20,13 +20,13 @@ public class UserService {
 	private final UserRepository userRepository;
 	@Autowired()
 	private BusEmitter busEmitter;
-
+	private int idTransaction;
 	RestTemplate restTemplate = new RestTemplate();
 
 	String cardControllerBaseUrl = "http://localhost:8082/";
 
 	public UserService(UserRepository userRepository) {
-
+		this.idTransaction = 0;
 		this.userRepository = userRepository;
 	}
 
@@ -47,7 +47,8 @@ public class UserService {
 	public String addUserESB(UserDTO user) {
 		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.CREATE);
 		busEmitter.sendMsg(busModel,"USER");
-		return "En cours de création";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/USER";
 	}
 
 	public UserDTO addUser(UserModel u) {
@@ -78,7 +79,8 @@ public class UserService {
 	public String updateUserESB(UserDTO user) {
 		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.UPDATE);
 		busEmitter.sendMsg(busModel,"USER");
-		return "En cours de modification";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/USER";
 	}
 
 	public UserDTO updateUser(UserDTO user) {
@@ -102,7 +104,8 @@ public class UserService {
 		BusModel busModel = new BusModel();
 		busModel.getUserModel().setId(Integer.valueOf(id));
 		busEmitter.sendMsg(busModel,"USER");
-		return "En cours de suppression";
+		idTransaction ++;
+		return String.valueOf(idTransaction) + "/USER";
 	}
 
 	public void deleteUser(int id) {
