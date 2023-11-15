@@ -1,5 +1,6 @@
 package com.example.User.ESB;
 
+import com.example.CommonLib.BusNotifModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
@@ -20,5 +21,8 @@ public class BusEmitter {
         System.out.println("[BUSSERVICE] SEND String MSG=["+busModel.getAction() + busModel.toString()+"] to Bus=["+busName+"]");
         jmsTemplate.convertAndSend(busName,busModel);
     }
-
+    public void sendMsg(BusNotifModel busNotifModel, String busName) {
+        System.out.println("[BUSSERVICE] SEND String MSG=["+busNotifModel.toString()+"] to Bus=["+busName+"]");
+        jmsTemplate.convertAndSend(busName,busNotifModel);
+    }
 }

@@ -22,9 +22,9 @@ public class BusListener {
         System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");
 
         switch (busmodel.getAction()){
-            case CREATE -> userService.addUser(busmodel.getUserModel());
-            case DELETE -> userService.deleteUser(busmodel.getUserModel().getId());
-            case UPDATE -> userService.updateUser(busmodel.getUserModel());
+            case CREATE -> userService.addUser(busmodel.getUserModel(),busmodel.getIdTransaction());
+            case DELETE -> userService.deleteUser(busmodel.getUserModel().getId(),busmodel.getIdTransaction());
+            case UPDATE -> userService.updateUser(busmodel.getUserModel(),busmodel.getIdTransaction());
         }
 
         //System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");

@@ -8,6 +8,7 @@ import com.example.User.ESB.BusEmitter;
 import com.example.User.ESB.BusModel;
 import com.example.User.Model.UserModel;
 import com.example.CommonLib.UserDTO;
+import com.example.CommonLib.BusNotifModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,13 +46,14 @@ public class UserService {
 	}
 
 	public String addUserESB(UserDTO user) {
-		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.CREATE);
-		busEmitter.sendMsg(busModel,"USER");
 		idTransaction ++;
+		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.CREATE,idTransaction);
+		busEmitter.sendMsg(busModel,"USER");
+
 		return String.valueOf(idTransaction) + "/USER";
 	}
 
-	public UserDTO addUser(UserModel u) {
+	public UserDTO addUser(UserModel u,Integer idTransaction) {
 		// needed to avoid detached entity passed to persist error
 		userRepository.save(u);
 		Set<Integer> cardDTORandCard = new HashSet<>();
@@ -73,14 +75,17 @@ public class UserService {
 		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
 				.collect(Collectors.toSet());
 		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
-
+		if (idTransaction != 0){
+			BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"USER");
+			busEmitter.sendMsg(busNotifModel,"NOTIFS");
+		}
 		return userDTO;
 	}
 
 	public String updateUserESB(UserDTO user) {
-		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.UPDATE);
-		busEmitter.sendMsg(busModel,"USER");
 		idTransaction ++;
+		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.UPDATE,idTransaction);
+		busEmitter.sendMsg(busModel,"USER");
 		return String.valueOf(idTransaction) + "/USER";
 	}
 
@@ -93,24 +98,33 @@ public class UserService {
 		return userDTO;
 	}
 
-	public UserDTO updateUser(UserModel user) {
+	public UserDTO updateUser(UserModel user,Integer idTransaction) {
 		UserModel uBd = userRepository.save(user);
 		Set<Integer> uniqueCardIds = uBd.getCardIdsList().stream()
 				.collect(Collectors.toSet());
 		UserDTO userDTO = new UserDTO(uBd.getId(), uBd.getLogin(), uBd.getPwd(), uBd.getAccount(), uBd.getLastName(), uBd.getSurName(), uBd.getEmail(), uniqueCardIds);
+		if (idTransaction != 0){
+			BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"USER");
+			busEmitter.sendMsg(busNotifModel,"NOTIFS");
+		}
 		return userDTO;
 	}
 
 	public String deleteUserESB(String id) {
+		idTransaction ++ ;
 		BusModel busModel = new BusModel();
 		busModel.getUserModel().setId(Integer.valueOf(id));
+		busModel.setIdTransaction(idTransaction);
 		busEmitter.sendMsg(busModel,"USER");
-		idTransaction ++;
 		return String.valueOf(idTransaction) + "/USER";
 	}
 
-	public void deleteUser(int id) {
+	public void deleteUser(int id,Integer idTransaction ) {
 		userRepository.deleteById(id);
+		if (idTransaction != 0){
+			BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"USER");
+			busEmitter.sendMsg(busNotifModel,"NOTIFS");
+		}
 	}
 
 	public List<UserModel> getUserByLoginPwd(String login, String pwd) {
