@@ -1,8 +1,5 @@
 package com.example.Notification_Websocket.Controller;
 
-
-import com.example.Notification_Websocket.Receiver.Greeting;
-import com.example.Notification_Websocket.Sender.HelloMessage;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -14,17 +11,17 @@ import org.springframework.web.util.HtmlUtils;
 public class NotificationController {
 
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
-        Thread.sleep(500); // simulated delay
-        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+    @MessageMapping("/CARD")
+    @SendTo("/topic/CARD")
+    public String greeting(String message) throws Exception {
+        String response = "response From TOPIC: CARD";
+        return response;
     }
 
-    @MessageMapping("/bye")
-    @SendTo("/topic/bye")
-    public Greeting bye(HelloMessage message) throws Exception {
-        Thread.sleep(500); // simulated delay
-        return new Greeting("Bye, " + HtmlUtils.htmlEscape(message.getName()) + "!");
+    @MessageMapping("/USER")
+    @SendTo("/topic/USER")
+    public String bye(String message) throws Exception {
+        String response = "response From TOPIC: USER";
+        return response;
     }
 }
