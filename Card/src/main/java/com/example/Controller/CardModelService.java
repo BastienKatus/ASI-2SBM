@@ -97,6 +97,7 @@ public class CardModelService {
 			currentCard.setEnergy(100);
 			currentCard.setHp(rand.nextFloat()*100);
 			currentCard.setPrice(currentCard.computePrice());
+			currentCard.isSell(true);
 			//save new card before sending for user creation
 			this.createCard(currentCard,0);
 			cardList.add(currentCard.getId());
