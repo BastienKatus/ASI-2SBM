@@ -23,7 +23,7 @@
   </div>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    
+
   const socket = io();
   let roomName = "";
   //console.log(document.getElementById('user-list-sender'))
@@ -31,7 +31,7 @@
   const userListSender = document.getElementById('user-list-sender');
   const userListReceiver = document.getElementById('user-list-receiver');
   socket.on('userList', (users) => {
-  // Afficher la liste des utilisateurs dans les listes déroulantes
+  // Afficher
   users.forEach((user) => {
   const option = document.createElement('option');
   option.value = user.login;

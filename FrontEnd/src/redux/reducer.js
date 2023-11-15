@@ -2,39 +2,44 @@ import { combineReducers } from "redux"
 
 const initial = {
     price: 0,
-    user: '',
+    user: [],
     cards: [],
+    selectedCard: [],
+    socket: []
 }
 export const reducer=(state=initial, action) => {
     const{type, payload} = action
     switch(type){
         case "buy":
             return {
+                ...state,
                 price: state.price-payload.price,
-                user: state.user,
-                cards: state.cards,
-                selectedCard: state.selectedCard
+            }
+        case "cards":
+            return {
+                ...state,
+                cards: payload.cards,
             }
         case "sell":
             return{
+                ...state,
                 price: state.price+payload.price,
-                user: state.user,
-                cards: state.cards,
-                selectedCard: state.selectedCard
             }
         case "user":
             return{
+                ...state,
                 user: payload.username,
                 price: payload.price,
-                cards: payload.cardList,
-                selectedCard: state.selectedCard
             }
         case "selectCard":
             return{
-                user: state.user,
-                price: state.price,
-                cards: state.cards,
+                ...state,
                 selectedCard: payload.selectedCard
+            }
+        case "socket":
+            return{
+                ...state,
+                socket: payload.socketio
             }
         default:
             return state

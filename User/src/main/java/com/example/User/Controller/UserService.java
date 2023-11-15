@@ -23,7 +23,7 @@ public class UserService {
 	private int idTransaction;
 	RestTemplate restTemplate = new RestTemplate();
 
-	String cardControllerBaseUrl = "http://localhost:8082/";
+	String cardControllerBaseUrl = "http://localhost:8082/cards/";
 
 	public UserService(UserRepository userRepository) {
 		this.idTransaction = 0;
@@ -64,6 +64,7 @@ public class UserService {
 			cardDTORandCard.add(2);
 			cardDTORandCard.add(3);
 		}
+		u.setCardIdsList(cardDTORandCard);
 
 		UserModel uBd = userRepository.save(u);
 

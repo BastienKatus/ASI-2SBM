@@ -1,8 +1,16 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+});
 const axios = require('axios');
+const cors = require('cors');
+
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
@@ -23,6 +31,17 @@ io.on('connection', (socket) => {
 
   socket.on('broadcast', (message) => {
     io.emit('broadcast', message); // Broadcast
+  });
+
+  socket.on('chatpage', (message) => {
+    axios.get('http://localhost:8080/users')
+        .then((response) => {
+          const users = response.data;
+          socket.emit('userList', users); // Émettre au client
+        })
+        .catch((error) => {
+          console.error('Erreur lors de la récupération des utilisateurs depuis l\'API Spring Boot:', error);
+        });
   });
 
   function getRoomName(user1, user2) {
@@ -51,7 +70,7 @@ io.on('connection', (socket) => {
   });
 });
 
-http.listen(3000, () => {
-  console.log('Serveur démarré sur le port 3000');
+http.listen(4000, () => {
+  console.log('Serveur démarré sur le port 4000');
 });
 
