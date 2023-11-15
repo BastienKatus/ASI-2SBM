@@ -14,7 +14,8 @@
     <select id="user-list-receiver"></select>
     <button onclick="joinChat()">Rejoindre le chat</button>
     <input type="text" id="message-input" placeholder="Entrez votre message">
-    <button onclick="sendMessage()" id="send-button">Envoyer</button>
+    <button onclick="sendMessage()" id="send-button">Envoyer en message privé</button>
+    <button onclick="broadcastMessage()" id="broadcast-button">Envoyer à tous les utilisateurs</button>
     <p id="roomNameText">Le nom de la room sera affiché ici</p>
   </div>
   <div id="message-box">
@@ -24,6 +25,7 @@
   <script>
     
   const socket = io();
+  let roomName = "";
   //console.log(document.getElementById('user-list-sender'))
   // Gestion de la réception de la liste des utilisateurs
   const userListSender = document.getElementById('user-list-sender');
@@ -45,25 +47,24 @@
   }
   });
 
-  // Gestion de l'envoi de messages (broadcast)
-  /*const messageInput = document.getElementById('message-input');
-  const sendButton = document.getElementById('send-button');
-  sendButton.addEventListener('click', () => {
+  function broadcastMessage(){
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('broadcast-button');
     const message = messageInput.value;
     if (message) {
-      socket.emit('message', message);
+      socket.emit('broadcast', message);
       messageInput.value = '';
     }
-  });
+  }
 
   // Gestion de la réception de messages (broadcast)
-  socket.on('message', (message) => {
+  socket.on('broadcast', (message) => {
     messageList = document.getElementById('message-list')
     user = document.getElementById('user-list-sender')
     const listItem = document.createElement('li');
-    listItem.textContent = user.value + ' : ' + message;
+    listItem.textContent = '[Broadcast] ' + user.value + ' : ' + message;
     messageList.appendChild(listItem);
-  });*/
+  });
 
   function getRoomName(user1, user2) {
     const sortedNames = [user1, user2].sort();
@@ -71,9 +72,6 @@
   }
 
   function leaveChat(){
-    const roomNameText = document.getElementById('roomNameText').textContent;
-    const tab = roomNameText.split(' ');
-    const roomName = tab[5];
     console.log(roomName);
     socket.emit('leaveRoom', roomName)
   }
@@ -83,7 +81,8 @@
     const senderUsername = document.getElementById('user-list-sender').value;
     const receiverUsername = document.getElementById('user-list-receiver').value;
     const roomNameText = document.getElementById('roomNameText');
-    roomNameText.textContent = "Vous êtes dans la room " + getRoomName(senderUsername, receiverUsername)
+    roomName = getRoomName(senderUsername, receiverUsername)
+    roomNameText.textContent = "Vous êtes dans la room " + roomName;
     socket.emit('joinRoom', { sender: senderUsername, receiver: receiverUsername });
   }
 
@@ -98,7 +97,7 @@
   socket.on('chatMessage', (data) => {
     const messages = document.getElementById('message-list');
     const li = document.createElement('li');
-    li.textContent = `${data.sender}: ${data.message}`;
+    li.textContent = `[Private] ${data.sender}: ${data.message}`;
     messages.appendChild(li);
   });
   </script>

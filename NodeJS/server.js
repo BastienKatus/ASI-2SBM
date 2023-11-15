@@ -21,8 +21,8 @@ io.on('connection', (socket) => {
       console.error('Erreur lors de la récupération des utilisateurs depuis l\'API Spring Boot:', error);
     });
 
-  socket.on('message', (message) => {
-    io.emit('message', message); // Broadcast
+  socket.on('broadcast', (message) => {
+    io.emit('broadcast', message); // Broadcast
   });
 
   function getRoomName(user1, user2) {
