@@ -58,5 +58,3 @@ $(function () {
     $( "#disconnect" ).click(() => disconnect());
     $( "#send" ).click(() => sendName());
 });
-
-console.log("HELLO APP")

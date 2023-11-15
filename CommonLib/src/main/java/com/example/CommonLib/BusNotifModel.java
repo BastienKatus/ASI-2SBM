@@ -1,10 +1,11 @@
-package com.example.ESB;
-
-import com.example.Model.CardModel;
+package com.example.CommonLib;
 
 import java.io.Serializable;
 
 public class BusNotifModel implements Serializable {
+
+    private static final long serialVersionUID = -2338626292552177485L;
+
     private Integer idTransaction;
     private String topic;
 
