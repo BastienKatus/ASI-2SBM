@@ -5,6 +5,7 @@ import com.example.CommonLib.UserDTO;
 import com.example.ESB.BusAction;
 import com.example.ESB.BusEmitter;
 import com.example.ESB.BusModel;
+import com.example.ESB.BusNotifModel;
 import com.example.common.tools.DTOMapper;
 import com.example.Model.CardModel;
 import com.example.Model.CardReference;
@@ -39,30 +40,31 @@ public class CardModelService {
 	}
 
 	public String createCardESB(CardModel cardModel) {
-		BusModel busModel = new BusModel(cardModel, BusAction.CREATE);
-		busEmitter.sendMsg(busModel,"CARD");
 		idTransaction ++;
+		BusModel busModel = new BusModel(cardModel, BusAction.CREATE,idTransaction);
+		busEmitter.sendMsg(busModel,"CARD");
+
 		return String.valueOf(idTransaction) + "/CARD";
 	}
 
-	public CardDTO createCard(CardModel cardModel) {
+	public CardDTO createCard(CardModel cardModel,Integer idTransaction) {
 		CardModel cDb = cardRepository.save(cardModel);
-		BusModel busModel = new BusModel(cardModel, BusAction.CREATE);
-		busEmitter.sendMsg(busModel,"NOTIFS");
+		BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"CARD");
+		busEmitter.sendMsg(busNotifModel,"NOTIFS");
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 
 
 	public String updateCardESB(CardModel cardModel) {
-		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE);
-		busEmitter.sendMsg(busModel,"CARD");
 		idTransaction ++;
+		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE,idTransaction);
+		busEmitter.sendMsg(busModel,"CARD");
 		return String.valueOf(idTransaction) + "/CARD";
 	}
-	public CardDTO updateCard(CardModel cardModel) {
+	public CardDTO updateCard(CardModel cardModel,Integer idTransaction) {
 		CardModel cDb=cardRepository.save(cardModel);
-		BusModel busModel = new BusModel(cardModel, BusAction.UPDATE);
-		busEmitter.sendMsg(busModel,"NOTIFS");
+		BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"CARD");
+		busEmitter.sendMsg(busNotifModel,"NOTIFS");
 		return DTOMapper.fromCardModelToCardDTO(cDb);
 	}
 	public Optional<CardModel> getCard(Integer id) {
@@ -79,11 +81,10 @@ public class CardModelService {
 		return String.valueOf(idTransaction) + "/CARD";
 	}
 
-	public void deleteCard(Integer id) {
+	public void deleteCard(Integer id,Integer idTransaction) {
 		cardRepository.deleteById(id);
-		BusModel busModel = new BusModel();
-		busModel.getCardModel().setId(id);
-		busEmitter.sendMsg(busModel,"NOTIFS");
+		BusNotifModel busNotifModel = new BusNotifModel(idTransaction,"CARD");
+		busEmitter.sendMsg(busNotifModel,"NOTIFS");
 	}
 	
 	/*public Set<CardModel> getRandCard(int nbr){

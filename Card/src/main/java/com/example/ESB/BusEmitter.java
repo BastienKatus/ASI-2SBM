@@ -28,4 +28,8 @@ public class BusEmitter {
         jmsTemplate.convertAndSend(busName,busModel);
     }
 
+    public void sendMsg(BusNotifModel busNotifModel, String busName) {
+        System.out.println("[BUSSERVICE] SEND String MSG=["+busNotifModel.toString()+"] to Bus=["+busName+"]");
+        jmsTemplate.convertAndSend(busName,busNotifModel);
+    }
 }

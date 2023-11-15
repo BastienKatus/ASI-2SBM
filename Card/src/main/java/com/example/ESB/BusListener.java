@@ -27,9 +27,9 @@ public class BusListener {
     public void receiveMessage(BusModel busmodel, Message message) {
 
         switch (busmodel.getAction()){
-            case CREATE -> cardModelService.createCard(busmodel.getCardModel());
-            case DELETE -> cardModelService.deleteCard(busmodel.getCardModel().getId());
-            case UPDATE -> cardModelService.updateCard(busmodel.getCardModel());
+            case CREATE -> cardModelService.createCard(busmodel.getCardModel(),busmodel.getIdTransaction());
+            case DELETE -> cardModelService.deleteCard(busmodel.getCardModel().getId(),busmodel.getIdTransaction());
+            case UPDATE -> cardModelService.updateCard(busmodel.getCardModel(),busmodel.getIdTransaction());
         }
 
         System.out.println("[BUSLISTENER] [CHANNEL RESULT_BUS_MNG] RECEIVED String MSG=["+busmodel.toString()+"]");
