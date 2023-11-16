@@ -26,7 +26,7 @@ public class BusListener {
     @JmsListener(destination = "NOTIFS", containerFactory = "connectionFactory")
     public void receiveMessage(BusNotifModel busModel, Message message) {
         System.out.println("[BUSLISTENER] [CHANNEL NOTIFS] RECEIVED String MSG=["+message.toString()+"]");
-        String responseToSend = new SimpleDateFormat("HH:mm").format(new Date()).toString();
+        String responseToSend = String.valueOf(busModel.getIdOperation());
         String topic = "/topic/"+busModel.getTopic();
         messagingTemplate.convertAndSend(topic, responseToSend);
     }
