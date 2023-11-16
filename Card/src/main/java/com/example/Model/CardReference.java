@@ -27,6 +27,7 @@ public class CardReference extends CardBasics implements Serializable {
 		super(name, description, family,affinity,imgUrl,smallImgUrl);
 	}
 
+
 	public Integer getId() {
 		return id;
 	}
