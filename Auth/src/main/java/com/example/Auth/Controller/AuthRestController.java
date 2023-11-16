@@ -22,7 +22,7 @@ public class AuthRestController {
 
 
     @RequestMapping(method=RequestMethod.POST,value="/register")
-    public UserDTO register(@RequestBody UserDTO user) {
+    public String register(@RequestBody UserDTO user) {
         return authService.registerUser(user);
     }
 }

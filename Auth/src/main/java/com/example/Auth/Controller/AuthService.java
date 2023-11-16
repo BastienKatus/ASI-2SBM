@@ -33,16 +33,17 @@ public class AuthService {
         }
     }
 
-    public UserDTO registerUser(UserDTO user) {
+    public String registerUser(UserDTO user) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<UserDTO> request = new HttpEntity<>(user, headers);
 
         try {
-            ResponseEntity<UserDTO> responseEntity = restTemplate.postForEntity(userControllerBaseUrl + "user", request, UserDTO.class);
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(userControllerBaseUrl + "user", request, String.class);
 
-            UserDTO userDTO = responseEntity.getBody();
+            String userDTO = responseEntity.getBody();
+            System.out.println("---" + userDTO);
             return userDTO;
         } catch (Exception e) {
             e.printStackTrace();

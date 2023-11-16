@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.util.HtmlUtils;
 
 @Controller
+@CrossOrigin
 public class NotificationController {
 
 
