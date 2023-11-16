@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -50,7 +51,7 @@ public class UserService {
 		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.CREATE,idTransaction);
 		busEmitter.sendMsg(busModel,"USER");
 
-		return String.valueOf(idTransaction) + "/USER";
+		return buildJson(idTransaction, "/USER");
 	}
 
 	public UserDTO addUser(UserModel u,Integer idTransaction) {
@@ -86,7 +87,7 @@ public class UserService {
 		idTransaction ++;
 		BusModel busModel = new BusModel(fromUDtoToUModel(user), BusAction.UPDATE,idTransaction);
 		busEmitter.sendMsg(busModel,"USER");
-		return String.valueOf(idTransaction) + "/USER";
+		return buildJson(idTransaction, "/USER");
 	}
 
 	public UserDTO updateUser(UserDTO user) {
@@ -116,7 +117,7 @@ public class UserService {
 		busModel.getUserModel().setId(Integer.valueOf(id));
 		busModel.setIdTransaction(idTransaction);
 		busEmitter.sendMsg(busModel,"USER");
-		return String.valueOf(idTransaction) + "/USER";
+		return buildJson(idTransaction, "/USER");
 	}
 
 	public void deleteUser(int id,Integer idTransaction ) {
@@ -137,5 +138,16 @@ public class UserService {
 	private UserModel fromUDtoToUModel(UserDTO user) {
 		UserModel u = new UserModel(user);
 		return u;
+	}
+
+	public static String buildJson(int idTransaction, String channel) {
+		// Construction de la chaîne JSON manuellement
+		String jsonString = "{"
+				+ "\"idTransaction\":" + idTransaction + ","
+				+ "\"channel\":\"" + channel + "\""
+				+ "}";
+
+		// Retour de la chaîne JSON résultante
+		return jsonString;
 	}
 }

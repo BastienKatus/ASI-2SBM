@@ -39,7 +39,7 @@ const RegistrationForm = () => {
   };
 
   function handleRouting() {
-    navigate("/");
+    navigate("/login");
   }
 
   const handleSubmit = (e) => {
@@ -57,19 +57,10 @@ const RegistrationForm = () => {
               referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
               body: JSON.stringify({"login": login,"pwd": password, "lastName": lastName, "surName": surName, "email": email}), // body data type must match "Content-Type" header
             })
-        .then((response) => console.log(response))
-        .then((data) => {
-        console.log(data)
-            dispatch({
-                type: 'user',
-                payload:{
-                    username: data,
-                    price: data.account,
-                    cardList: data.cardList
-                }
-            })
-            handleRouting()
-        })
+        .then(response => response.json())
+        .then(json => console.log('Réponse de Notifier Service : ', json, '. Votre Utilisateur a été créé, vous pouvez vous connecter'))
+//         })
+    handleRouting()
     // Réinitialiser les champs après la soumission
     setSurName('');
     setLastName('');
