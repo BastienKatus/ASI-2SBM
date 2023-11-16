@@ -45,14 +45,14 @@ public class StoreService {
 			return false;
 		}
 
-		if (userDTO.getAccount() > cardDTO.getPrice()) {
+		if (userDTO.getAccount() > cardDTO.getPrice() && cardDTO.getIsSell() == false) {
 			userDTO.getCardList().add(card_id);
 			userDTO.setAccount(userDTO.getAccount() - cardDTO.getPrice());
 
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Content-Type", "application/json");
 			HttpEntity<UserDTO> requestUpdate = new HttpEntity<>(userDTO, headers);
-			ResponseEntity<UserDTO> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdate, UserDTO.class);
+			ResponseEntity<String> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdate, String.class);
 			StoreTransaction sT = new StoreTransaction(user_id, card_id, StoreAction.BUY);
 			storeRepository.save(sT);
 			return true;
@@ -76,11 +76,11 @@ public class StoreService {
 
 		cardDTO.setId(null);
 		HttpEntity<CardDTO> requestUpdateCard = new HttpEntity<>(cardDTO, headers);
-		ResponseEntity<CardDTO> cardUpdate = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.PUT, requestUpdateCard, CardDTO.class);
+		ResponseEntity<String> cardUpdate = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.PUT, requestUpdateCard, String.class);
 
 		userDTO.setAccount(userDTO.getAccount() + cardDTO.getPrice());
 		HttpEntity<UserDTO> requestUpdateUser = new HttpEntity<>(userDTO, headers);
-		ResponseEntity<UserDTO> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdateUser, UserDTO.class);
+		ResponseEntity<String> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdateUser, String.class);
 
 		StoreTransaction sT = new StoreTransaction(user_id, card_id, StoreAction.SELL);
 		storeRepository.save(sT);
