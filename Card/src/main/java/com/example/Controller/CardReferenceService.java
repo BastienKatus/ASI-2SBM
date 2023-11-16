@@ -48,7 +48,10 @@ public class CardReferenceService {
 	 */
 	@EventListener(ApplicationReadyEvent.class)
 	public void doInitAfterStartup() {
-		cardRefRepository.addPokemonStart();
+		List<CardReference> cardRefList=getAllCardRef();
+		if( cardRefList.size()==0) {
+			cardRefRepository.addPokemonStart();
+		}
 	}
 	
 }
