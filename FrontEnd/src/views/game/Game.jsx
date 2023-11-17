@@ -12,6 +12,12 @@ const App = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if(reducer.user.length === 0){
+            navigate('/')
+        }
+      }, [location])
+
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ flex: 1, overflowY: 'scroll' }}>

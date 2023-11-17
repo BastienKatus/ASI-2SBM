@@ -9,15 +9,19 @@ const Chat = () => {
   const [users, setUsers] = useState([]);
   const [sender, setSender] = useState('');
   const [receiver, setReceiver] = useState('');
+  const [isConnected, setIsConnected] = useState('');
 
   useEffect(() => {
+
+  setIsConnected(false);
     // Gestion de la réception de la liste des utilisateurs
     reducer.socket.on('userList', (users) => {
-      setUsers(users);
+    users = users.filter(user => user.login !== reducer.user.login);
+    setUsers(users);
 
       // Sélectionner le premier utilisateur par défaut
       if (users.length > 0) {
-        setSender(users[0].login);
+        setSender(reducer.user.login);
         setReceiver(users[0].login);
       }
     });
@@ -49,35 +53,41 @@ const Chat = () => {
 
   const joinChat = () => {
     leaveChat(); // Assurez-vous de quitter la salle avant de rejoindre une nouvelle
+    setIsConnected(true);
     reducer.socket.emit('joinRoom', { sender, receiver });
   };
-
+  const changeReceiver =(receiver)=>{
+        setReceiver(receiver);
+        setIsConnected(false);
+  }
   const leaveChat = () => {
     const roomNameText = getRoomName(sender, receiver);
+    setIsConnected(false);
     reducer.socket.emit('leaveRoom', roomNameText);
   };
 
   const getRoomName = (user1, user2) => {
-    const sortedNames = [user1, user2].sort();
-    return `${sortedNames[0]}_${sortedNames[1]}`;
+    if(isConnected){
+        const sortedNames = [user1, user2].sort();
+        return `Vous êtes dans la room : ${sortedNames[0]}_${sortedNames[1]}`;
+    }
+    else{
+        return "Vous n'êtes pas connectés";
+    }
   };
 
   return (
     <div id="chat-box">
       <h2>Chat</h2>
       <div class="input-group">
-        <p>Qui êtes-vous ?</p>
-        <select value={sender} onChange={(e) => setSender(e.target.value)}>
-          {users.map((user) => (
-            <option key={user.login} value={user.login}>
-              {user.login}
-            </option>
-          ))}
-        </select>
+        <p>Vous êtes : </p>
+        <p>{
+        reducer.user.login
+        }</p>
       </div>
       <div class="input-group">
         <p>Avec qui souhaitez-vous chatter ?</p>
-        <select value={receiver} onChange={(e) => setReceiver(e.target.value)}>
+        <select value={receiver} onChange={(e) => changeReceiver(e.target.value)}>
           {users.map((user) => (
             <option key={user.login} value={user.login}>
               {user.login}
@@ -86,8 +96,8 @@ const Chat = () => {
         </select>
       </div>
       <br />
-      <button onClick={joinChat}>Rejoindre le chat</button>
-      <p id="roomNameText">Vous êtes dans la room {getRoomName(sender, receiver)}</p>
+        {!isConnected ? <button onClick={joinChat}>Rejoindre le chat</button>: <button onClick={leaveChat}>Quitter le chat</button>}
+      <p id="roomNameText">{getRoomName(sender, receiver)}</p>
       <div id="message-box">
         <ul id="message-list">
           {messages.map((message, index) => (
@@ -102,9 +112,10 @@ const Chat = () => {
           onChange={handleInputChange}
           placeholder="Entrez votre message"
         />
-        <button onClick={handleSendMessage} id="send-button">
-          Envoyer
-        </button>
+        <button onClick={handleSendMessage} id="send-button">Envoyer</button>
+
+
+
       </div>
     </div>
 

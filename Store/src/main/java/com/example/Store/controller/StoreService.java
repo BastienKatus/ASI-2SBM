@@ -42,16 +42,23 @@ public class StoreService {
 		ResponseEntity<CardDTO> cardResponse = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.GET, null, CardDTO.class);
 		CardDTO cardDTO = cardResponse.getBody();
 
-		if (userDTO == null || cardDTO == null) {
+		if (userDTO == null || cardDTO == null||cardDTO.getIsSell() == true) {
 			return false;
 		}
 
 		if (userDTO.getAccount() > cardDTO.getPrice() && cardDTO.getIsSell() == false) {
+			HttpHeaders headers = new HttpHeaders();
+			headers.add("Content-Type", "application/json");
+
+			cardDTO.setIsSell(true);
+			HttpEntity<CardDTO> requestUpdateCard = new HttpEntity<>(cardDTO, headers);
+			ResponseEntity<String> cardUpdate = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.PUT, requestUpdateCard, String.class);
+
+
 			userDTO.getCardList().add(card_id);
 			userDTO.setAccount(userDTO.getAccount() - cardDTO.getPrice());
 
-			HttpHeaders headers = new HttpHeaders();
-			headers.add("Content-Type", "application/json");
+
 			HttpEntity<UserDTO> requestUpdate = new HttpEntity<>(userDTO, headers);
 			ResponseEntity<String> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdate, String.class);
 			StoreTransaction sT = new StoreTransaction(user_id, card_id, StoreAction.BUY);
@@ -68,14 +75,14 @@ public class StoreService {
 		ResponseEntity<CardDTO> cardResponse = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.GET, null, CardDTO.class);
 		CardDTO cardDTO = cardResponse.getBody();
 
-		if (userDTO == null || cardDTO == null) {
+		if (userDTO == null || cardDTO == null || userDTO.getCardList().contains(card_id) == false ||cardDTO.getIsSell() == false) {
 			return false;
 		}
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Content-Type", "application/json");
 
-		cardDTO.setId(null);
+		cardDTO.setIsSell(false);
 
 		HttpEntity<CardDTO> requestUpdateCard = new HttpEntity<>(cardDTO, headers);
 		ResponseEntity<String> cardUpdate = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.PUT, requestUpdateCard, String.class);

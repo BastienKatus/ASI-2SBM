@@ -2,35 +2,32 @@ import { Outlet, Link } from "react-router-dom";
 import { useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCoins } from '@fortawesome/free-solid-svg-icons';
-
-function getCircularReplacer() {
-  const ancestors = [];
-  return function (key, value) {
-    if (typeof value !== "object" || value === null) {
-      return value;
-    }
-    // `this` is the object that value is contained in,
-    // i.e., its direct parent.
-    while (ancestors.length > 0 && ancestors.at(-1) !== this) {
-      ancestors.pop();
-    }
-    if (ancestors.includes(value)) {
-      return "[Circular]";
-    }
-    ancestors.push(value);
-    return value;
-  };
-}
+import { useDispatch } from 'react-redux'
+import { useNavigate } from "react-router-dom";
 
 export default function Root(props) {
   const reducer = useSelector(state => state.reducer)
-const tempsocket = reducer.socket
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+
+  const logout = () => {
+     navigate('/login')
+    dispatch({
+         type: 'user',
+         payload:
+         {
+             user: []
+         }
+     })
+  };
+
   return (
     <>
       <div id="sidebar">
         <nav>
           <ul>
-            {reducer.user.length !== 0 ? (
+            {reducer.user && reducer.user.length !== 0 ? (
                     <>
                     <li>
                         <Link to={`/`}>Accueil</Link>
@@ -62,10 +59,10 @@ const tempsocket = reducer.socket
                     </>
                 )
             }
-            <li className="bottomProfile">
-                {reducer.user.length !== 0 && <p>{reducer.user.login} : {reducer.price}<FontAwesomeIcon icon={faCoins} /></p>}
-
-            </li>
+            {reducer.user && reducer.user.length !== 0 && <li className="bottomProfile">
+                <p>{reducer.user.login} : {reducer.price}<FontAwesomeIcon icon={faCoins} /></p>
+                <button onClick={logout}>Se Déconnecter</button>
+            </li>}
           </ul>
         </nav>
       </div>

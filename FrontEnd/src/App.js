@@ -17,37 +17,33 @@ import io from 'socket.io-client';
 function App() {
 
   const socket = io('localhost:4000');
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  // Gestion des messages STOMP
-  const onMessageHandler = (msg) => {
-    // Faites quelque chose avec le message reçu
-    console.log('Message reçu:', msg);
-
-  };
-    const customHeaders = {
-        "Access-Control-Allow-Origin": "*"
-    };
+      dispatch({
+          type: 'socket',
+          payload:{
+              socketio : socket
+          }
+      })
 
   return (
     <React.StrictMode>
       <Provider store={store}>
         <RouterProvider router={router} />
       </Provider>
-
-      {/* Connexion à la WebSocket STOMP */}
-      <SockJsClient
-        url='http://localhost:8085' // Assurez-vous que l'URL est correcte
-        topics={['/topic/example']} // Ajoutez les sujets STOMP nécessaires
-        onConnect={() => console.log('Connecté à la WebSocket STOMP')}
-        onDisconnect={() => console.log('Déconnecté de la WebSocket STOMP')}
-        onMessage={onMessageHandler} // Gestionnaire de messages STOMP
-        debug={false}
-        headers={customHeaders}
-      />
     </React.StrictMode>
   );
 }
+//      {/* Connexion à la WebSocket STOMP, à rajouter au dessus mais non fonctionnel */}
+//      <SockJsClient
+//        url='http://localhost:8085' // Assurez-vous que l'URL est correcte
+//        topics={['/topic/example']} // Ajoutez les sujets STOMP nécessaires
+//        onConnect={() => console.log('Connecté à la WebSocket STOMP')}
+//        onDisconnect={() => console.log('Déconnecté de la WebSocket STOMP')}
+//        onMessage={onMessageHandler} // Gestionnaire de messages STOMP
+//        debug={false}
+//        headers={customHeaders}
+//      />
 
 const router = createBrowserRouter([
   {
