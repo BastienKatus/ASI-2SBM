@@ -3,6 +3,7 @@ package com.example.Store.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.example.CommonLib.CardDTO;
 import com.example.CommonLib.UserDTO;
@@ -75,9 +76,12 @@ public class StoreService {
 		headers.add("Content-Type", "application/json");
 
 		cardDTO.setId(null);
+
 		HttpEntity<CardDTO> requestUpdateCard = new HttpEntity<>(cardDTO, headers);
 		ResponseEntity<String> cardUpdate = restTemplate.exchange( cardUrl + "cards/" + card_id, HttpMethod.PUT, requestUpdateCard, String.class);
-
+		Set<Integer> listTmp = userDTO.getCardList();
+		listTmp.remove(card_id);
+		userDTO.setCardList(listTmp);
 		userDTO.setAccount(userDTO.getAccount() + cardDTO.getPrice());
 		HttpEntity<UserDTO> requestUpdateUser = new HttpEntity<>(userDTO, headers);
 		ResponseEntity<String> userUpdate = restTemplate.exchange(userUrl + "user/" + user_id, HttpMethod.PUT, requestUpdateUser, String.class);

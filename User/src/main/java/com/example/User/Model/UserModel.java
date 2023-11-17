@@ -55,6 +55,7 @@ public class UserModel implements Serializable {
 		this.lastName=user.getLastName();
 		this.surName=user.getSurName();
 		this.email=user.getEmail();
+		this.cardIdsList = user.getCardList();
 	}
 
 	public Integer getId() {

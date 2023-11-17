@@ -17,6 +17,28 @@ const CardTable = (props) => {
             }
         })
 
+        console.log("reducer ", reducer.user)
+
+        let urlStoreAPI = "http://localhost:8083/" + props.type
+        let storeBody = JSON.stringify({"user_id": reducer.login, "card_id": reducer.selectedCard }),
+
+        // Faire appel API
+        fetch(urlStoreAPI, {
+                      method: "POST",
+                      mode: "cors", // no-cors, *cors, same-origin
+                      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+                      credentials: "same-origin", // include, *same-origin, omit
+                      headers: {
+                        "Content-Type": "application/json",
+                        // 'Content-Type': 'application/x-www-form-urlencoded',
+                      },
+                      redirect: "follow", // manual, *follow, error
+                      referrerPolicy: "no-referrer", // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+                      body: storeBody, // body data type must match "Content-Type" header
+                    })
+                .then((response) => console.log(response))
+                .then((data) => console.log("zebi on fait koi la ?")
+        // Réinitiliser la liste des cartes
     }
     else {
       alert('Veuillez sélectionner une carte.');
