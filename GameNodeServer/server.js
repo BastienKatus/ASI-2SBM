@@ -16,7 +16,8 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-waitingUsers = [];
+waitingUsers = []
+userCards = []
 
 io.on('connection', (socket) => {
   console.log('Utilisateur connecté' + socket.id);
@@ -51,8 +52,10 @@ io.on('connection', (socket) => {
     return `${sortedNames[0]}_${sortedNames[1]}`;
   }
 
-  socket.on('joinRoom', (waitingUsers) => {
-    console.log(waitingUsers[0])
+  socket.on('joinRoom', (data) => {
+    const roomName = getRoomName(data.sender, data.receiver);
+    socket.join(roomName);
+    console.log(`${socket.id} a rejoint la room ${roomName}`);
   });
 
   socket.on('leaveRoom', (roomName) => {
@@ -69,20 +72,44 @@ io.on('connection', (socket) => {
     console.log('Utilisateur déconnecté');
   });
 
-  socket.on('joinGame', (user) => {
-    waitingUsers.push(user)
-    console.log(waitingUsers);
-    if(waitingUsers.length > 1){
-      const roomName = getRoomName(waitingUsers[0].login, waitingUsers[1].login);
-      socket.join(roomName);
-      console.log(`${socket.id} a rejoint la room ${roomName}`);
-      waitingUsers.splice(0, waitingUsers.length);
+  socket.on('joinGame', (user, card) => {
+    console.log(user);
+    console.log(card);
+    waitingUsers.push(user);
+    userCards.push(card);
+    socket.join(waitingUsers[0].login);
+    if(waitingUsers.length == userCards.length){
+      if(waitingUsers.length > 1){
+        const roomName = getRoomName(waitingUsers[0].login, waitingUsers[1].login);
+        //socket.emit('gameInfo', roomName, waitingUsers, userCards);
+        io.to(waitingUsers[0].login).emit('gameInfo', roomName, waitingUsers, userCards);
+        pickWinner();
+        waitingUsers.splice(0, waitingUsers.length);
+        userCards.splice(0, userCards.length);
+      }
+      else{
+        console.log(`Le user ${user.login} est en attente d'un autre joueur`)
+      }
     }
     else{
-      console.log(`Le user ${user.login} est en attente d'un autre joueur`)
+      console.log("Erreur d'ajout des cartes et des utilisateurs à la room");
+      waitingUsers.splice(0, waitingUsers.length);
+      userCards.splice(0, userCards.length);
     }
   })
 });
+
+function pickWinner(){
+  console.log(userCards);
+  if(userCards[0].hp > userCards[1].hp){
+    io.to(waitingUsers[0].login).emit('winner', waitingUsers[0]);
+    console.log(`Le gagnant est ${waitingUsers[0].login}`);
+  }
+  else{
+    io.to(waitingUsers[0].login).emit('winner', waitingUsers[1]);
+    console.log(`Le gagnant est ${waitingUsers[1].login}`);
+  }
+}
 
 http.listen(4000, () => {
   console.log('Serveur démarré sur le port 4000');

@@ -12,6 +12,7 @@
     <select id="user-list-sender"></select>
     Avec qui souhaitez-vous chatter ?
     <select id="user-list-receiver"></select>
+    <button onclick="joinChat()">Rejoindre le chat</button>
     <button onclick="joinGame()">Jouer</button>
     <input type="text" id="message-input" placeholder="Entrez votre message">
     <button onclick="sendMessage()" id="send-button">Envoyer en message privé</button>
@@ -105,14 +106,26 @@
   function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
   }
+
   let currentUser = {
     id : getRandomInt(1, 11),
     login : "blabla" + getRandomInt(1, 556564)
-  } 
+  }
+
+  let selectedCard = {
+    id : getRandomInt(1, 100),
+    hp : getRandomInt(1, 200)
+  }
 
   function joinGame(){
-    socket.emit('joinGame', currentUser)
+    socket.emit('joinGame', currentUser, selectedCard)
   }
+
+  socket.on('gameInfo', (roomName, users, cards) => {
+    console.log(roomName);
+    console.log(users);
+    console.log(cards);
+  })
   </script>
 </body>
 </html>

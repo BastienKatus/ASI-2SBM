@@ -7,8 +7,7 @@ const CardTable = (props) => {
   const dispatch = useDispatch();
 
   const handle = () => {
-    if (reducer.selectedCard !== undefined) {
-
+    if (props.type !== 'jouer' && reducer.selectedCard !== undefined) {
         // Faire appel API
         fetch('http://localhost:8083/store/' + props.type, {
                       method: "POST",
@@ -142,9 +141,10 @@ const CardTable = (props) => {
         </tbody>
       </table>
       <div className="buy-button-container">
+        {props.action !== 'jouer' && (props.type === 'sell' || props.type === 'buy') &&
         <button onClick={handle} disabled={reducer.selectedCard === undefined}>
             { props.type === 'sell' ? 'Vendre' : 'Acheter' }
-        </button>
+        </button>}
       </div>
     </div>
   );
