@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat en temps réel</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="chat-box">
+    <h2>Chat en temps réel</h2>
+    Qui êtes-vous ?
+    <select id="user-list-sender"></select>
+    Avec qui souhaitez-vous chatter ?
+    <select id="user-list-receiver"></select>
+    <button onclick="joinChat()">Rejoindre le chat</button>
+    <button onclick="joinGame()">Jouer</button>
+    <input type="text" id="message-input" placeholder="Entrez votre message">
+    <button onclick="sendMessage()" id="send-button">Envoyer en message privé</button>
+    <button onclick="broadcastMessage()" id="broadcast-button">Envoyer à tous les utilisateurs</button>
+    <p id="roomNameText">Le nom de la room sera affiché ici</p>
+  </div>
+  <div id="message-box">
+    <ul id="message-list"></ul>
+  </div>
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+
+  const socket = io();
+  let roomName = "";
+  //console.log(document.getElementById('user-list-sender'))
+  // Gestion de la réception de la liste des utilisateurs
+  const userListSender = document.getElementById('user-list-sender');
+  const userListReceiver = document.getElementById('user-list-receiver');
+  socket.on('userList', (users) => {
+  // Afficher
+  users.forEach((user) => {
+  const option = document.createElement('option');
+  option.value = user.login;
+  option.textContent = user.login;
+  userListSender.appendChild(option.cloneNode(true));
+  userListReceiver.appendChild(option.cloneNode(true));
+  });
+
+  // selection premier utilisateur par défaut
+  if (users.length > 0) {
+    userListSender.selectedIndex = 0;
+    userListReceiver.selectedIndex = 0;
+  }
+  });
+
+  function broadcastMessage(){
+    const messageInput = document.getElementById('message-input');
+    const sendButton = document.getElementById('broadcast-button');
+    const message = messageInput.value;
+    if (message) {
+      socket.emit('broadcast', message);
+      messageInput.value = '';
+    }
+  }
+
+  // Gestion de la réception de messages (broadcast)
+  socket.on('broadcast', (message) => {
+    messageList = document.getElementById('message-list')
+    user = document.getElementById('user-list-sender')
+    const listItem = document.createElement('li');
+    listItem.textContent = '[Broadcast] ' + user.value + ' : ' + message;
+    messageList.appendChild(listItem);
+  });
+
+  function getRoomName(user1, user2) {
+    const sortedNames = [user1, user2].sort();
+    return `${sortedNames[0]}_${sortedNames[1]}`;
+  }
+
+  function leaveChat(){
+    console.log(roomName);
+    socket.emit('leaveRoom', roomName)
+  }
+
+  function joinChat() {
+    leaveChat();
+    const senderUsername = document.getElementById('user-list-sender').value;
+    const receiverUsername = document.getElementById('user-list-receiver').value;
+    const roomNameText = document.getElementById('roomNameText');
+    roomName = getRoomName(senderUsername, receiverUsername)
+    roomNameText.textContent = "Vous êtes dans la room " + roomName;
+    socket.emit('joinRoom', { sender: senderUsername, receiver: receiverUsername });
+  }
+
+  function sendMessage() {
+    const sender = document.getElementById('user-list-sender').value;
+    const receiver = document.getElementById('user-list-receiver').value;
+    const message = document.getElementById('message-input').value;
+
+    socket.emit('chatMessage', { sender, receiver, message });
+  }
+
+  socket.on('chatMessage', (data) => {
+    const messages = document.getElementById('message-list');
+    const li = document.createElement('li');
+    li.textContent = `[Private] ${data.sender}: ${data.message}`;
+    messages.appendChild(li);
+  });
+
+  //utilisateur provisoire juste pour tester. Dans le vrai front, ce sera l'utilisateur connecté
+  function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min) + min);
+  }
+
+  let currentUser = {
+    id : getRandomInt(1, 11),
+    login : "blabla" + getRandomInt(1, 556564)
+  }
+
+  let selectedCard = {
+    id : getRandomInt(1, 100),
+    hp : getRandomInt(1, 200)
+  }
+
+  function joinGame(){
+    socket.emit('joinGame', currentUser, selectedCard)
+  }
+
+  socket.on('gameInfo', (roomName, users, cards) => {
+    console.log(roomName);
+    console.log(users);
+    console.log(cards);
+  })
+  </script>
+</body>
+</html>
