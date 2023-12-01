@@ -92,10 +92,10 @@ public class CardModelService {
 		for(int i=0;i<nbr;i++) {
 			CardReference currentCardRef=cardRefService.getRandCardRef();
 			CardModel currentCard=new CardModel(currentCardRef);
-			currentCard.setAttack(rand.nextFloat()*100);
-			currentCard.setDefence(rand.nextFloat()*100);
-			currentCard.setEnergy(100);
-			currentCard.setHp(rand.nextFloat()*100);
+			currentCard.setAttack(rand.nextInt()*100);
+			currentCard.setDefence(rand.nextInt()*100);
+			currentCard.setEnergy(rand.nextInt()*100);
+			currentCard.setHp(rand.nextInt()*100);
 			currentCard.setPrice(currentCard.computePrice());
 			currentCard.isSell(true);
 			//save new card before sending for user creation
