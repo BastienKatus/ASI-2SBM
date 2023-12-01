@@ -16,6 +16,27 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+
+function sendChat(roomName, userSender, userReceiver, message){
+  const data = {
+    roomName: roomName,
+    idSender: userSender,
+    idReceiver: userReceiver,
+    message: message
+  };
+  console.log("HELLO DATA in sendChat---->>",data)
+  const url = 'http://localhost:8086/chat';
+  axios.post(url, data)
+    .then((response) => {
+      console.log("sendChat RESPONSE -->",response);
+      console.log("sendChat RESPONSE -->",JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.error('Erreur lors de l\'exÃ©cution de la requÃªte POST vers l\'API Spring Boot:', error);
+    });
+}
+
+users = []
 waitingUsers = []
 userCards = []
 
@@ -25,7 +46,7 @@ io.on('connection', (socket) => {
   // Récupération de la liste des utilisateurs via l'API Users (backend springboot)
   axios.get('http://localhost:8080/users')
     .then((response) => {
-      const users = response.data;
+      users = response.data;
       socket.emit('userList', users); // Émettre au client
     })
     .catch((error) => {
@@ -66,6 +87,21 @@ io.on('connection', (socket) => {
   socket.on('chatMessage', (data) => {
     const roomName = getRoomName(data.sender, data.receiver);
     io.to(roomName).emit('chatMessage', data);
+
+    let sender = data.sender;
+    let receiver = data.receiver;
+    let message = data.message;
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      if(user.login == data.sender){
+        sender = user.id
+      }
+      if(user.login == data.receiver){
+        receiver = user.id
+      }
+    }
+    // Appel Ã  SendChat to save message in DB
+    sendChat(roomName, sender, receiver, message)
   });
 
   socket.on('disconnect', () => {

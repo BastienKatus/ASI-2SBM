@@ -55,6 +55,55 @@ const Chat = () => {
     leaveChat(); // Assurez-vous de quitter la salle avant de rejoindre une nouvelle
     setIsConnected(true);
     reducer.socket.emit('joinRoom', { sender, receiver });
+
+    const sortedNames = [sender, receiver].sort();
+    const roomName = `${sortedNames[0]}_${sortedNames[1]}`;
+    console.log("HELLO restoreChat in sendChat---->>", roomName);
+    const url = "http://localhost:8086/chat/" + roomName;
+    fetch(url)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("restoreChat RESPONSE -->", data);
+        console.log("restoreChat RESPONSE -->", JSON.stringify(data));
+        const messageLists = data;
+        console.log(messageLists);
+
+        for (let i = 0; i < messageLists.length; i++) {
+          const messageList = messageLists[i];
+          console.log(messageList);
+          let senderLogin = "";
+          let receiverLogin ="";
+          if(reducer.user.id == messageList.idSender){
+            senderLogin = sender
+            receiverLogin = receiver
+          }
+          else{
+              senderLogin = receiver
+              receiverLogin = sender
+          }
+          const message = messageList.message;
+    /*
+          inputMessage.setInputMessage(message);
+          sender.setSender(sender);
+          receiver.setReceiver(receiver);
+          handleSendMessage();*/
+          //reducer.socket.emit('chatMessage', { sender, receiver, message });
+          // ou ca
+          //io.to(roomName).emit('chatMessage', { sender, receiver, message});
+          setMessages((prevMessages) => [...prevMessages, `${senderLogin}: ${message}`]);
+        }
+    
+        console.log("Faire un socket.emit chat message avec chacun des messages", messageLists);
+        return data;
+      })
+      .catch((error) => {
+        console.error('Erreur lors de l\'exécution de la requête GET vers l\'API Spring Boot:', error);
+      });
   };
   const changeReceiver =(receiver)=>{
         setReceiver(receiver);
