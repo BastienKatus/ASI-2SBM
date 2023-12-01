@@ -9,16 +9,17 @@ public class ChatDTO {
     private int idSender;
     private int idReceiver;
     private int numMessage;
-    private int idRoom;
+    private String roomName;
+
     public ChatDTO() {
     }
 
-    public ChatDTO(String message, int idSender, int idReceiver, int numMessage, int idRoom) {
+    public ChatDTO(String message, int idSender, int idReceiver, int numMessage, String roomName) {
         this.message = message;
         this.idSender = idSender;
         this.idReceiver = idReceiver;
         this.numMessage = numMessage;
-        this.idRoom = idRoom;
+        this.roomName = roomName;
     }
 
     public Integer getId() {
@@ -53,12 +54,12 @@ public class ChatDTO {
         this.idReceiver = idReceiver;
     }
 
-    public int getIdRoom() {
-        return idRoom;
+    public String getRoomName() {
+        return roomName;
     }
 
-    public void setIdRoom(int idRoom) {
-        this.idRoom = idRoom;
+    public void setRoomName(String roomName) {
+        this.roomName = roomName;
     }
 
     public int getNumMessage() {

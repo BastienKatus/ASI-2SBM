@@ -10,6 +10,6 @@ import java.util.List;
 
 public interface ChatRepository extends CrudRepository<ChatModel, Integer> {
 
-    List<ChatModel> findByIdRoom(int idRoom);
+    List<ChatModel> findByRoomName(String roomName);
 
 }

@@ -22,16 +22,16 @@ public class ChatService {
 		chatRepository.findAll().forEach(chatList::add);
 		return chatList;
 	}
-	public List<ChatModel> getChatbyRoomId(int roomId) {
+	public List<ChatModel> getChatByRoomName(String roomName) {
 		List<ChatModel> chatList = new ArrayList<>();
-		return chatRepository.findByIdRoom(roomId);
+		return chatRepository.findByRoomName(roomName);
 	}
 
 
 	public ChatDTO addChat(ChatModel c) {
 		// needed to avoid detached entity passed to persist error
 		chatRepository.save(c);
-		ChatDTO chatDTO = new ChatDTO(c.getMessage(),c.getIdSender(),c.getIdReceiver(),c.getNumMessage(),c.getIdRoom());
+		ChatDTO chatDTO = new ChatDTO(c.getMessage(),c.getIdSender(),c.getIdReceiver(),c.getNumMessage(),c.getRoomName());
 		return chatDTO;
 	}
 

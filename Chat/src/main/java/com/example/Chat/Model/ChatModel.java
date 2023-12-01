@@ -17,21 +17,21 @@ public class ChatModel implements Serializable {
 	private String message;
 	private int idSender;
 	private int idReceiver;
-	private int idRoom;
+	private String roomName;
 	private int numMessage;
 	public ChatModel() {
 		this.message = "";
 		this.idSender = 0;
 		this.idReceiver = 0;
-		this.idRoom = 0;
+		this.roomName = "";
 
 	}
 
-	public ChatModel(String message, int idSender, int idReceiver, int idRoom, int numMessage) {
+	public ChatModel(String message, int idSender, int idReceiver, String roomName, int numMessage) {
 		this.message = message;
 		this.idSender = idSender;
 		this.idReceiver = idReceiver;
-		this.idRoom = idRoom;
+		this.roomName = roomName;
 		this.numMessage = numMessage;
 	}
 
@@ -39,7 +39,7 @@ public class ChatModel implements Serializable {
 		this.message = chat.getMessage();
 		this.idSender = chat.getIdSender();
 		this.idReceiver = chat.getIdReceiver();
-		this.idRoom = chat.getIdRoom();
+		this.roomName = chat.getRoomName();
 		this.numMessage = chat.getNumMessage();
 	}
 
@@ -75,12 +75,12 @@ public class ChatModel implements Serializable {
 		this.idReceiver = idReceiver;
 	}
 
-	public int getIdRoom() {
-		return idRoom;
+	public String getRoomName() {
+		return roomName;
 	}
 
-	public void setIdRoom(int idRoom) {
-		this.idRoom = idRoom;
+	public void setRoomName(String roomName) {
+		this.roomName = roomName;
 	}
 
 	public int getNumMessage() {
@@ -98,7 +98,7 @@ public class ChatModel implements Serializable {
 				", message='" + message + '\'' +
 				", idSender=" + idSender +
 				", idReceiver=" + idReceiver +
-				", idRoom=" + idRoom +
+				", roomName=" + roomName +
 				", numMessage=" + numMessage +
 				'}';
 	}

@@ -23,18 +23,18 @@ public class ChatRestController {
 	private List<ChatDTO> getAllChat() {
 		List<ChatDTO> cDTOList=new ArrayList<ChatDTO>();
 		for(ChatModel cM: chatService.getAllChat()){
-			ChatDTO chatDTO = new ChatDTO(cM.getMessage(), cM.getIdSender(), cM.getIdReceiver(), cM.getNumMessage(), cM.getIdRoom());
+			ChatDTO chatDTO = new ChatDTO(cM.getMessage(), cM.getIdSender(), cM.getIdReceiver(), cM.getNumMessage(), cM.getRoomName());
 			cDTOList.add(chatDTO);
 		}
 		return cDTOList;
 
 	}
 	
-	@RequestMapping(method=RequestMethod.GET,value="/chat/{roomId}")
-	private List<ChatDTO> getChatbyIdRoom(@PathVariable int roomId) {
+	@RequestMapping(method=RequestMethod.GET,value="/chat/{roomName}")
+	private List<ChatDTO> getChatbyIdRoom(@PathVariable String roomName) {
 		List<ChatDTO> cDTOList=new ArrayList<ChatDTO>();
-		for(ChatModel cM: chatService.getChatbyRoomId(roomId)){
-			ChatDTO chatDTO = new ChatDTO(cM.getMessage(), cM.getIdSender(), cM.getIdReceiver(), cM.getNumMessage(), cM.getIdRoom());
+		for(ChatModel cM: chatService.getChatByRoomName(roomName)){
+			ChatDTO chatDTO = new ChatDTO(cM.getMessage(), cM.getIdSender(), cM.getIdReceiver(), cM.getNumMessage(), cM.getRoomName());
 			cDTOList.add(chatDTO);
 		}
 		return cDTOList;
