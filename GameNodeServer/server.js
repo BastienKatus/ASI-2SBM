@@ -91,6 +91,7 @@ io.on('connection', (socket) => {
     let sender = data.sender;
     let receiver = data.receiver;
     let message = data.message;
+    console.log(sender,receiver);
     for (let i = 0; i < users.length; i++) {
       const user = users[i];
       if(user.login == data.sender){
@@ -100,6 +101,7 @@ io.on('connection', (socket) => {
         receiver = user.id
       }
     }
+    console.log(sender,receiver);
     // Appel Ã  SendChat to save message in DB
     sendChat(roomName, sender, receiver, message)
   });

@@ -46,7 +46,7 @@ public class StoreService {
 			return false;
 		}
 
-		if (userDTO.getAccount() > cardDTO.getPrice() && cardDTO.getIsSell() == false) {
+		if (userDTO.getAccount() >= cardDTO.getPrice() && cardDTO.getIsSell() == false) {
 			HttpHeaders headers = new HttpHeaders();
 			headers.add("Content-Type", "application/json");
 
